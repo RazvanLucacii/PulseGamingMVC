@@ -1,26 +1,16 @@
 ﻿@model List<Juego>
 
-@{
-    ViewData["Title"] = "PulseGaming";
-}
-
-<div id="lista" class="container mt-5 d-flex">
-    @foreach (Juego game in Model)
-    {
-            <div class="card text-center border-black" style="width:300px; height:100px; margin-right: 50px">
-                <img class="card-img-top" src="~/images/@game.ImagenJuego" alt="Card image cap" />
-            <div class="card-body">
-                    <p class="card-title">
-                        @game.NombreJuego
-                    </p>
-                    <p class="card-text">
-                        @game.PrecioJuego €
-                    </p>
-                    <button class="fill">
-                        Comprar
-                    </button>
+<div id="lista" class="container mt-5">
+        @foreach (Juego game in Model)
+        {
+            <div class="card d-inline-flex p-2 text-center">
+                <img class="card-img-top" src="~/images/@game.ImagenJuego" alt="Card image cap">
+                <div class="card-body">
+                <h5 class="card-title">@game.NombreJuego</h5>
+                    <p class="card-text">@game.PrecioJuego €</p>
+                    <button class="custom btn btn-15">Comprar</button>
                 </div>
             </div>
-    }
+        }
 </div>
 
