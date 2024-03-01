@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="Helpers\" />
     <Folder Include="Extensions\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>

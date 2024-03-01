@@ -13,7 +13,7 @@ namespace PulseGamingMVC.Controllers
             this.repo = repo;
         }
 
-        public IActionResult Index()
+        public IActionResult Home()
         {
             List<Juego> juegos = this.repo.GetJuegos();
             return View(juegos);
