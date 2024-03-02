@@ -8,7 +8,7 @@
                 <div class="card-body">
                 <h5 class="card-title">@game.NombreJuego</h5>
                     <p class="card-text">@game.PrecioJuego €</p>
-                    <button class="custom btn btn-15">Comprar</button>
+                    @Html.ActionLink("Comprar", "Details", "Juegos", new{ IdJuego = game.IdJuego}, new {@class = "btn btn-dark"})
                 </div>
             </div>
         }
