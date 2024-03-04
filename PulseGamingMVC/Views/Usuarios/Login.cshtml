@@ -1,0 +1,21 @@
+﻿@model Usuario
+
+<h1>Login</h1>
+
+<form method="post">
+    <label>Email: </label>
+    <input type="text" name="email" class="form-control" />
+    <label>Password: </label>
+    <input type="password" name="password" class="form-control" />
+    <button class="btn btn-success">
+        Login
+    </button>
+</form>
+
+<h1>@ViewData["MENSAJE"]</h1>
+
+@if (Model != null)
+{
+    <h1>Bienvenido @Model.Nombre</h1>
+    <h2>@Model.Apellidos</h2>
+}

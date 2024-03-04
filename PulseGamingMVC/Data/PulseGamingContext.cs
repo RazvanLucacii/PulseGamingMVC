@@ -8,5 +8,7 @@ namespace PulseGamingMVC.Data
         public PulseGamingContext(DbContextOptions<PulseGamingContext> options): base(options) { }
 
         public DbSet<Juego> Juegos { get; set; }
+
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
