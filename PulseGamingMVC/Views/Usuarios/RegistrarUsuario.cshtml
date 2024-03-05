@@ -1,19 +1,24 @@
-﻿﻿<h1>Registro Usuario</h1>
+﻿@{
+    ViewData["Title"] = "Registro";
+}
 
-<form method="post">
-    <label>Nombre: </label>
-    <input type="text" name="nombre" class="form-control" />
-    <label>Apellidos: </label>
-    <input type="text" name="apellidos" class="form-control" />
-    <label>Email: </label>
-    <input type="text" name="email" class="form-control" />
-    <label>Password: </label>
-    <input type="password" name="password" class="form-control" />
-    <label>Telefono: </label>
-    <input type="number" name="telefono" class="form-control" />
-    <button class="btn btn-info">
-        Registro
-    </button>
-</form>
+<div class="register-card">
+    <form method="post">
+        <h1>Registro</h1><br>
+
+        <input type="text" name="nombre" placeholder="Nombre">
+        <input type="text" name="apellidos" placeholder="Apellidos">
+        <input type="text" name="email" placeholder="Email">
+        <input type="password" name="password" placeholder="Password">
+        <input type="text" name="telefono" placeholder="Telefono">
+        <input type="submit" name="registro" class="register register-submit" value="Registro">
+    </form>
+    <p class="text-center">
+        ¿Ya tienes cuenta?
+    </p>
+    <div class="register-help">
+        <a asp-action="Login" asp-controller="Usuarios">Login</a>
+    </div>
+</div>
 
 <h1>@ViewData["MENSAJE"]</h1>
