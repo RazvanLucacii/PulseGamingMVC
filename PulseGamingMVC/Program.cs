@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
 string connectionString = builder.Configuration.GetConnectionString("SqlPulseGaming");
 builder.Services.AddTransient<RepositoryUsuarios>();
@@ -33,7 +34,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 });
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(

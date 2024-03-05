@@ -1,45 +1,18 @@
-﻿.custom-btn {
-    background-color: #007bff;
+﻿.botonesCustom {
+    /* border: 1px solid #3079ed; */
+    border: 0px;
     color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+    text-shadow: 0 1px rgba(0,0,0,0.1);
+    background-color: rgba(9,9,121,1);
+    /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
 }
 
-.btn-15 {
-    background: rgba(9,9,121,1);
-    border: none;
-    z-index: 1;
-    margin-right: 5px;
-    color: white;
-}
-
-    .btn-15:after {
-        position: absolute;
-        content: "";
-        width: 0;
-        height: 100%;
-        top: 0;
-        right: 0;
-        z-index: -1;
+    .botonesCustom:hover {
+        /* border: 1px solid #2f5bb7; */
+        border: 0px;
+        text-shadow: 0 1px rgba(0,0,0,0.3);
         background-color: rgba(34,193,195,1);
-        border-radius: 5px;
-        box-shadow: inset 2px 2px 2px 0px rgba(255,255,255,.5), 7px 7px 20px 0px rgba(0,0,0,.1), 4px 4px 5px 0px rgba(0,0,0,.1);
-        transition: all 0.3s ease;
-    }
-
-    .btn-15:hover {
-        color: #fff;
-    }
-
-        .btn-15:hover:after {
-            left: 0;
-            width: 100%;
-        }
-
-    .btn-15:active {
-        top: 2px;
+        /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); */
     }
 
 img {
@@ -53,6 +26,7 @@ img {
     margin-bottom: 20px;
     max-width: 220px;
     min-height: 350px;
+    margin-right: 70px;
 }
 
 footer {
@@ -71,4 +45,24 @@ a{
 .navbar-toggler{
     background-color: aqua;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

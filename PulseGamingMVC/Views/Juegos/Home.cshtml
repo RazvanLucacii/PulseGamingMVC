@@ -1,6 +1,10 @@
 ﻿@model List<Juego>
 
-<div id="lista" class="container mt-5">
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
         @foreach (Juego game in Model)
         {
             <div class="card d-inline-flex p-2 text-center">

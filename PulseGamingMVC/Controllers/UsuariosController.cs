@@ -44,8 +44,15 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
-                return View(user);
+                HttpContext.Session.SetString("USUARIO", user.ToString());
+                return RedirectToAction("Home", "Juegos");
             }
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("USUARIO");
+            return RedirectToAction("Login");
         }
 
     }
