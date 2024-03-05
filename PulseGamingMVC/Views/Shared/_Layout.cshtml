@@ -1,4 +1,4 @@
-﻿﻿@{
+﻿@{
     string? user = Context.Session.GetString("USUARIO");
 }
 
@@ -37,23 +37,31 @@
                     </ul>
                     @if (user is not null)
                     {
-                        <a class="btn btn-danger" asp-action="Logout" asp-controller="Usuarios">LogOut</a>
+                        <ul class="navbar-nav float-end">
+                            <li class="nav-item dropdown">
+                                <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-action="Logout" asp-controller="Usuarios">Log Out</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     }
                     else
                     {
-                        <a class="btn btn-secondary" asp-area="" asp-controller="Usuarios" asp-action="Login">Login</a>
+                        <ul class="navbar-nav float-end">
+                            <li class="nav-item dropdown">
+                                <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Login">Log-In</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="RegistrarUsuario">Register</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     }
-                    <ul class="navbar-nav float-end">
-                        <li class="nav-item dropdown">
-                            <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Login">Login</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="RegistrarUsuario">Register</a></li>
-                            </ul>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </nav>
