@@ -3,6 +3,23 @@ using Microsoft.EntityFrameworkCore;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Models;
 
+#region PROCEDIMIENTOS ALMACENADOS
+
+//create procedure SP_TODOS_JUEGOS
+//as
+//	select * from Juego
+//go
+
+//create procedure SP_DETALLES_JUEGO
+//(@IDJuego int)
+//as
+//	select * from Juego where IDJuego = @IDJuego
+//go
+
+
+
+#endregion
+
 namespace PulseGamingMVC.Repositories
 {
     public class RepositoryJuegosSqlServer : IRepositoryJuegos

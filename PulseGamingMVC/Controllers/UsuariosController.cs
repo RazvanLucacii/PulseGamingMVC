@@ -2,6 +2,8 @@
 using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
 using PulseGamingMVC.Repositories;
+using PulseGamingMVC.Extensions;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace PulseGamingMVC.Controllers
 {
@@ -20,11 +22,10 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegistrarUsuario(string nombre, string apellidos, string email, string password, int telefono)
+        public async Task<IActionResult> RegistrarUsuario(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
         {
-            await this.repo.RegisterUser(nombre, apellidos, email, password, telefono);
-            ViewData["MENSAJE"] = "Usuario registrado correctamente. " +
-                " Hemos enviado un mail para activar su cuenta";
+            await this.repo.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
+            ViewData["MENSAJE"] = "Usuario registrado correctamente.";
             return View();
         }
 
@@ -44,8 +45,19 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
-                HttpContext.Session.SetString("USUARIO", user.ToString());
-                return RedirectToAction("Home", "Juegos");
+                HttpContext.Session.SetInt32("UserRole", user.IDRole);
+
+                // Redireccionar según el rol del usuario
+                if (user.IDRole == 1) // Suponiendo que el ID 1 corresponde al rol de administrador
+                {
+                    HttpContext.Session.SetString("USUARIO", user.ToString());
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("USUARIO", user.ToString());
+                    return RedirectToAction("Home", "Juegos");
+                }
             }
         }
 

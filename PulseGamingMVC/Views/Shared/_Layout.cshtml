@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Registro.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PulseGamingMVC.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -35,33 +36,33 @@
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
-                    @if (user is not null)
-                    {
-                        <ul class="navbar-nav float-end">
-                            <li class="nav-item dropdown">
-                                <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i>
-                                </button>
-                                <ul class="dropdown-menu">
+                    <ul class="navbar-nav float-end">
+                        <li class="nav-item dropdown">
+                            <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                @if (user is not null)
+                                {
+                                    int userRole = (int)Context.Session.GetInt32("UserRole");
+                                    if (userRole == 1) // Si el rol del usuario es administrador
+                                    {
+                                        <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="dropdown-item" asp-action="Perfil" asp-controller="Usuarios">Perfil de Usuario</a></li>
+                                    }
                                     <li><a class="dropdown-item" asp-action="Logout" asp-controller="Usuarios">Log Out</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav float-end">
-                            <li class="nav-item dropdown">
-                                <button type="button" class="botonesCustom" class="dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i>
-                                </button>
-                                <ul class="dropdown-menu">
+                                }
+                                else
+                                {
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Login">Log-In</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="RegistrarUsuario">Register</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    }
+                                }
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

@@ -1,7 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
+
+#region PROCEDIMIENTOS ALMACENADOS
+
+//create procedure SP_TODOS_USUARIOS
+//as
+//	select * from Usuarios
+//go
+
+#endregion
 
 namespace PulseGamingMVC.Repositories
 {
@@ -27,7 +37,7 @@ namespace PulseGamingMVC.Repositories
             }
         }
 
-        public async Task RegisterUser(string nombre, string apellidos, string email, string password, int telefono)
+        public async Task RegisterUser(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
         {
             Usuario user = new Usuario();
             user.IdUsuario = await this.GetMaxIdUsuarioAsync();
@@ -35,6 +45,7 @@ namespace PulseGamingMVC.Repositories
             user.Nombre = nombre;
             user.Email = email;
             user.Telefono = telefono;
+            user.IDRole = IDRole;
             //CADA USUARIO TENDRA UN SALT DISTINTO
             user.Salt = HelperJuegos.GenerateSalt();
             //GUARDAMOS EL PASSWORD EN BYTE[]
@@ -44,19 +55,9 @@ namespace PulseGamingMVC.Repositories
             await this.context.SaveChangesAsync();
         }
 
-        //NECESITAMOS UN METODO PARA VALIDAR AL USUARIO
-        //DICHO METODO DEVOLVERA EL PROPIO USUARIO
-        //COMO COMPARAMOS?? email CAMPO UNICO
-        //password (12345)
-        //1) RECUPERAR EL USER POR SU EMAIL
-        //2) RECUPERAMOS EL SALT DEL USUARIO
-        //3) CONVERTIMOS DE NUEVO EL PASSWORD CON EL SALT
-        //4) RECUPERAMOS EL BYTE[] DE PASSWORD DE LA BBDD
-        //5) COMPARAMOS LOS DOS ARRAYS (BBDD) Y EL GENERADO EN EL CODIGO
         public async Task<Usuario> LogInUserAsync(string email, string password)
         {
-            Usuario user = await
-                this.context.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
+            Usuario user = await this.context.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
             if (user == null)
             {
                 return null;
@@ -78,6 +79,13 @@ namespace PulseGamingMVC.Repositories
                     return null;
                 }
             }
+        }
+
+        public List<Usuario> GetUsuarios()
+        {
+            string sql = "SP_TODOS_USUARIOS";
+            var consulta = this.context.Usuarios.FromSqlRaw(sql);
+            return consulta.ToList();
         }
     }
 }
