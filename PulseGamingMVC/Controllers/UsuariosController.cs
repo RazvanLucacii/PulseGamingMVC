@@ -4,6 +4,8 @@ using PulseGamingMVC.Models;
 using PulseGamingMVC.Repositories;
 using PulseGamingMVC.Extensions;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace PulseGamingMVC.Controllers
 {

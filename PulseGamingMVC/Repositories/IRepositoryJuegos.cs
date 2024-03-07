@@ -6,5 +6,7 @@ namespace PulseGamingMVC.Repositories
     {
         List<Juego> GetJuegos();
         Juego FindJuego(int IdJuego);
+
+        void RegistrarJuego(string nombre, int idGenero, string imagen, double precio, string descripcion);
     }
 }

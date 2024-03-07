@@ -8,11 +8,9 @@
 
 <p>
     <a asp-action="Dashboard" asp-controller="Admin" class="btn btn-dark">
-        Atras
+        <i class="bi bi-arrow-90deg-left"></i>
     </a>
-</p>
-<p>
-    <a asp-action="Create" class="btn btn-dark">Nuevo Juego</a>
+    <a asp-action="CreateJuego" class="btn btn-dark">Nuevo Juego</a>
 </p>
 
 <table class="table">
@@ -55,9 +53,8 @@
                 @Html.DisplayFor(modelItem => item.PrecioJuego)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }, new{@class = "btn btn-dark"}) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-dark" }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-dark" })
+                @Html.ActionLink("Edit", "ModificarJuego", new {  idJuego =item.IdJuego }, new{@class = "btn btn-dark"}) |
+                    @Html.ActionLink("Delete", "DeleteJuego", new { idJuego = item.IdJuego }, new { @class = "btn btn-dark" })
             </td>
         </tr>
 }

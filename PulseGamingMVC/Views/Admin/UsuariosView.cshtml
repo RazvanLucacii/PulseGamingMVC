@@ -4,15 +4,13 @@
     ViewData["Title"] = "UsuariosView";
 }
 
-<h1>UsuariosView</h1>
+<h1>Vista Usuarios</h1>
 
 <p>
     <a asp-action="Dashboard" asp-controller="Admin" class="btn btn-dark">
-        Atras
+        <i class="bi bi-arrow-90deg-left"></i>
     </a>
-</p>
-<p>
-    <a asp-action="Create" class="btn btn-dark">Nuevo Usuario</a>
+    <a asp-action="CreateUsuario" class="btn btn-dark">Nuevo Usuario</a>
 </p>
 
 <table class="table">
@@ -32,9 +30,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IDRole)
             </th>
             <th></th>
         </tr>
@@ -58,12 +53,8 @@
                 @Html.DisplayFor(modelItem => item.Telefono)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IDRole)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-dark" }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-dark" }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }, new { @class = "btn btn-dark" })
+                    @Html.ActionLink("Editar", "ModificarUsuario", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-dark" }) |
+                    @Html.ActionLink("Delete", "DeleteUsuario", new { idUsuario = item.IdUsuario }, new { @class = "btn btn-dark" })
             </td>
         </tr>
 }
