@@ -25,7 +25,7 @@ using System.Diagnostics.Metrics;
 //        SELECT 'El ID del género no existe' AS Mensaje
 //        RETURN
 //    end
-	
+
 //	DECLARE @NEXTID INT
 //	SELECT @NEXTID = MAX(IDJuego) +1 FROM Juego
 //    INSERT INTO Juego VALUES (@NEXTID, @NombreJuego, @IDGenero, @Imagen, @Precio, @Descripcion)
@@ -69,6 +69,11 @@ namespace PulseGamingMVC.Repositories
             SqlParameter pamDescripcion = new SqlParameter("@Descripcion", descripcion);
             this.context.Database.ExecuteSqlRaw(sql, pamNombre, pamIDGenero, pamImagen, pamPrecio, pamDescripcion);
 
+        }
+
+        public Task<List<Juego>> GetJuegosSessionAsync(List<int> ids)
+        {
+            throw new NotImplementedException();
         }
     }
 }

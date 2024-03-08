@@ -16,7 +16,7 @@
             <img src="~/images/@Model.ImagenJuego" style="width:500px; height: 600px" />
         </div>
         <div class="col-lg-6">
-            <form method="post" enctype="multipart/form-data" >
+            <form method="post" enctype="multipart/form-data">
                 <div class="form-group row">
                     <label class="col-sm-3 col-md-3 form-control-label"><b>Precio: </b></label>
                     <div class="col-sm-8 col-md-9">
@@ -31,10 +31,38 @@
                     </div>
                 </div>
                 <br />
-                <button type="submit" class="btn btn-dark">
+                <button type="submit" class="btn btn-dark" id="comprarButton">
                     Comprar
                 </button>
             </form>
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#comprarButton").click(function () {
+                 const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'center',
+                    iconColor: 'white',
+                    customClass: {
+                        popup: 'colored-toast',
+                    },
+                    showConfirmButton: false,
+                    timer: 10500,
+                    timerProgressBar: true,
+                });
+
+                (async () => {
+                    await Toast.fire({
+                        icon: 'success',
+                        title: '@TempData["SuccessMessage"]',
+                    })
+                })();
+            })
+        })
+    </script>
+}
