@@ -1,0 +1,31 @@
+﻿@model List<Carrito>
+
+<table class="table" id="carrito">
+    <thead>
+        <tr>
+            <th>Nombre del Juego</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NombreJuego</td>
+                <td>@item.PrecioJuego €</td>
+                <td>
+                    <button onclick="decrementarCantidad(@item.IdJuego)">-</button>
+                    <span>@item.Cantidad</span>
+                    <button onclick="incrementarCantidad(@item.IdJuego)">+</button>
+                </td>
+                <td>@(item.PrecioJuego * item.Cantidad) €</td>
+                <td>
+                    <button onclick="eliminarJuego(@item.IdJuego)">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

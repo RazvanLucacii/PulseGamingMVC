@@ -1,5 +1,9 @@
-﻿namespace PulseGamingMVC.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace PulseGamingMVC.Models
 {
+
     public class Carrito
     {
         public int IdJuego { get; set; }

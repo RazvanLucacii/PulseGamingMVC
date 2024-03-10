@@ -9,7 +9,5 @@ namespace PulseGamingMVC.Repositories
         Juego FindJuego(int IdJuego);
 
         void RegistrarJuego(string nombre, int idGenero, string imagen, double precio, string descripcion);
-
-        Task<List<Juego>> GetJuegosSessionAsync(List<int> ids);
     }
 }

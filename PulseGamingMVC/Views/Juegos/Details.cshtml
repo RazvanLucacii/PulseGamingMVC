@@ -4,40 +4,44 @@
     ViewData["Title"] = "Details";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="page-header">@Model.NombreJuego</h1>
+@if(Model != null)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="page-header">@Model.NombreJuego</h1>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <img src="~/images/@Model.ImagenJuego" style="width:500px; height: 600px" />
+            </div>
+            <div class="col-lg-6">
+                <form method="post" asp-action="AñadirCarrito" enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <input type="hidden" name="IdJuego" value="@Model.IdJuego" />
+                        <label class="col-sm-3 col-md-3 form-control-label"><b>Precio: </b></label>
+                        <div class="col-sm-8 col-md-9">
+                            <span>@Model.PrecioJuego €</span>
+                        </div>
+                        <div class="col-sm-12 col-md-12"></div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-md-3 form-control-label"><b>Descripcion: </b></label>
+                        <div class="col-sm-8 col-md-9">
+                            <span>@Model.Descripcion</span>
+                        </div>
+                    </div>
+                    <br />
+                    <button type="submit" class="btn btn-dark" id="comprarButton">
+                        Comprar
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-    <hr />
-    <div class="row">
-        <div class="col-lg-6 mb-4">
-            <img src="~/images/@Model.ImagenJuego" style="width:500px; height: 600px" />
-        </div>
-        <div class="col-lg-6">
-            <form method="post" enctype="multipart/form-data">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-md-3 form-control-label"><b>Precio: </b></label>
-                    <div class="col-sm-8 col-md-9">
-                        <span>@Model.PrecioJuego €</span>
-                    </div>
-                    <div class="col-sm-12 col-md-12"></div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-sm-3 col-md-3 form-control-label"><b>Descripcion: </b></label>
-                    <div class="col-sm-8 col-md-9">
-                        <span>@Model.Descripcion</span>
-                    </div>
-                </div>
-                <br />
-                <button type="submit" class="btn btn-dark" id="comprarButton">
-                    Comprar
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
+}
 
 
 @section Scripts {

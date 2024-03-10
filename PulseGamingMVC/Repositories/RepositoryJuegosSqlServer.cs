@@ -1,7 +1,9 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Models;
+using System.Data;
 using System.Diagnostics.Metrics;
 
 #region PROCEDIMIENTOS ALMACENADOS
@@ -18,18 +20,30 @@ using System.Diagnostics.Metrics;
 //go
 
 //create PROCEDURE SP_INSERT_JUEGO
-//(@NombreJuego NVARCHAR(100), @IDGenero INT, @Imagen NVARCHAR(255), @Precio FLOAT, @Descripcion NVARCHAR(MAX))
+//(@NombreJuego NVARCHAR(100), @IDGenero INT, @Imagen NVARCHAR(255), @Precio FLOAT, @Descripcion NVARCHAR(MAX), @IDEditor int)
 //as
-//    IF NOT EXISTS (SELECT 1 FROM Genero WHERE IDGenero = @IDGenero)
-//    begin
-//        SELECT 'El ID del género no existe' AS Mensaje
-//        RETURN
-//    end
-
 //	DECLARE @NEXTID INT
 //	SELECT @NEXTID = MAX(IDJuego) +1 FROM Juego
-//    INSERT INTO Juego VALUES (@NEXTID, @NombreJuego, @IDGenero, @Imagen, @Precio, @Descripcion)
+//  INSERT INTO Juego VALUES (@NEXTID, @NombreJuego, @IDGenero, @Imagen, @Precio, @Descripcion, @IDEditor)
 //go
+
+//create procedure SP_INSERT_CARRITO(
+//@IDUsuario int,
+//@IDJuego int,
+//@Resultado int output
+//)
+//as
+//begin
+//	set @Resultado = 0
+//	if not exists (select * from Carrito where IDJuego = @IDJuego and IDUsuario = @IDUsuario)
+//	begin
+//		update Juego set Stock = Stock -1 where IDJuego = @IDJuego
+//		insert into Carrito(IDUsuario, IDJuego) values ( @IdUsuario, @IDJuego)
+//		set @Resultado = 1
+//	end
+//end
+//go
+
 
 #endregion
 
@@ -71,9 +85,6 @@ namespace PulseGamingMVC.Repositories
 
         }
 
-        public Task<List<Juego>> GetJuegosSessionAsync(List<int> ids)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
