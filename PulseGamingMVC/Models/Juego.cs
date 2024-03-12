@@ -19,5 +19,7 @@ namespace PulseGamingMVC.Models
         public double PrecioJuego { get; set; }
         [Column("DescripcionJuego")]
         public string? Descripcion { get; set; }
+        [Column("IDEditor")]
+        public int IdEditor { get; set; }
     }
 }

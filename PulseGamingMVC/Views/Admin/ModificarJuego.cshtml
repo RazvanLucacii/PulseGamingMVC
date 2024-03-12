@@ -1,12 +1,12 @@
 ﻿@model PulseGamingMVC.Models.Juego
 
 @{
-    ViewData["Title"] = "CreateJuego";
+    ViewData["Title"] = "ModificarJuego";
     var generos = ViewData["GENEROS"] as List<Genero>;
     var editores = ViewData["EDITORES"] as List<Editor>;
 }
 
-<h1>Crear Juego</h1>
+<h1>ModificarJuego</h1>
 
 <p>
     <a asp-action="JuegosView" class="btn btn-dark"><i class="bi bi-arrow-90deg-left"></i></a>
@@ -14,12 +14,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateJuego">
+        <form asp-action="ModificarJuego">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" value="idJuego" />
+            <div class="form-group">
+                <label asp-for="IdJuego" class="control-label"></label>
+                <input asp-for="IdJuego" value="@Model.IdJuego" type="hidden" class="form-control" />
+                <span asp-validation-for="IdJuego" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="NombreJuego" class="control-label"></label>
-                <input asp-for="NombreJuego" class="form-control" />
+                <input asp-for="NombreJuego" value="@Model.NombreJuego" class="form-control" />
                 <span asp-validation-for="NombreJuego" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -35,17 +39,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImagenJuego" class="control-label"></label>
-                <input asp-for="ImagenJuego" class="form-control" />
+                <input asp-for="ImagenJuego" value="@Model.ImagenJuego" class="form-control" />
                 <span asp-validation-for="ImagenJuego" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PrecioJuego" class="control-label"></label>
-                <input asp-for="PrecioJuego" class="form-control" />
+                <input asp-for="PrecioJuego" value="@Model.PrecioJuego" class="form-control" />
                 <span asp-validation-for="PrecioJuego" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Descripcion" class="control-label"></label>
-                <input asp-for="Descripcion" class="form-control" />
+                <input asp-for="Descripcion" value="@Model.Descripcion" class="form-control" />
                 <span asp-validation-for="Descripcion" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,14 +64,11 @@
                 </select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
-<h2>@TempData["MENSAJE"]</h2>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
