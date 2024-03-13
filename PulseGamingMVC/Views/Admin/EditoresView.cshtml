@@ -7,8 +7,12 @@
 <h1>Editores</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Dashboard" asp-controller="Admin" class="btn btn-dark">
+        <i class="bi bi-arrow-90deg-left"></i>
+    </a>
+    <a asp-action="CreateEditor" class="btn btn-dark">Nuevo Editor</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,8 +35,8 @@
                 @Html.DisplayFor(modelItem => item.NombreEditor)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "ModificarEditor", new { idEditor = item.IDEditor }, new { @class = "btn btn-dark" }) |
+                @Html.ActionLink("Delete", "DeleteEditor", new { idEditor = item.IDEditor }, new { @class = "btn btn-dark" })
             </td>
         </tr>
 }

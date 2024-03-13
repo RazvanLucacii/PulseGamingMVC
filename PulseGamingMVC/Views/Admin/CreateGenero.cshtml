@@ -1,0 +1,31 @@
+﻿@model PulseGamingMVC.Models.Genero
+
+@{
+    ViewData["Title"] = "CreateGenero";
+}
+
+<h1>Crear Genero</h1>
+
+<p>
+    <a asp-action="GenerosView" class="btn btn-dark"><i class="bi bi-arrow-90deg-left"></i></a>
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateGenero">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreGenero" class="control-label"></label>
+                <input asp-for="NombreGenero" class="form-control" />
+                <span asp-validation-for="NombreGenero" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

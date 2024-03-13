@@ -2,9 +2,22 @@
 
 @{
     ViewData["Title"] = "Login";
+    var juegosDesc = ViewData["JUEGOSDESC"] as List<Juego>;
+    var juegosAsc = ViewData["JUEGOSASCE"] as List<Juego>;
+    
 }
 
 <div class="container mt-5">
+    @using (Html.BeginForm("Home", "Juegos", FormMethod.Get))
+    {
+        <label for="precio"><i class="bi bi-filter"></i></label>
+        <select name="precio" id="precio">
+            <option value="asc">Precio Ascendente</option>
+            <option value="desc">Precio Descendiente</option>
+        </select>
+        <button type="submit" value="search">Filtrar</button>
+    }
+    <hr />
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-5 g-5">
         @foreach (Juego game in Model)
         {

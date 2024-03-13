@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PulseGamingMVC.Data;
 using PulseGamingMVC.Extensions;
 using PulseGamingMVC.Models;
 using PulseGamingMVC.Repositories;
+using System;
 
 namespace PulseGamingMVC.Controllers
 {
@@ -14,10 +17,39 @@ namespace PulseGamingMVC.Controllers
             this.repo = repo;
         }
 
-        public IActionResult Home()
+        public IActionResult Home(string precio, string search)
         {
-            List<Juego> juegos = this.repo.GetJuegos();
-            return View(juegos);
+            if(precio == "desc")
+            {
+                var juegosDesc = this.repo.GetJuegosPrecioDesc();
+                return View(juegosDesc);
+            }
+            else if(precio == "asc")
+            {
+                var juegosasc = this.repo.GetJuegosPrecioAsce() ;
+                return View(juegosasc);
+            }
+            else
+            {
+                List<Juego> juegos = this.repo.GetJuegos();
+                return View(juegos);
+            }
+
+
+        }
+
+        public IActionResult FiltrarJuegos(string precio)
+        {
+            if (precio == "desc")
+            {
+                @ViewData["JUEGOSDESC"] = this.repo.GetJuegosPrecioDesc();
+            }
+            else if (precio == "asc")
+            {
+                @ViewData["JUEGOSASCE"] = this.repo.GetJuegosPrecioAsce();
+            }
+
+            return RedirectToAction("Home", "Juegos");
         }
 
         public IActionResult Details(int IdJuego)

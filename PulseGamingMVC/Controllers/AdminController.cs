@@ -38,22 +38,13 @@ namespace PulseGamingMVC.Controllers
             return View();
         }
 
+        //USUARIOS
         public IActionResult UsuariosView()
         {
             List<Usuario> usuarios = this.repoUsu.GetUsuarios();
             return View(usuarios);
         }
 
-        public IActionResult JuegosView()
-        {
-            List<Juego> juegos = this.repoGame.GetJuegos();
-            return View(juegos);
-        }
-
-        public IActionResult GenerosEditoresView()
-        {
-            return View();
-        }
 
         public IActionResult CreateUsuario()
         {
@@ -91,6 +82,13 @@ namespace PulseGamingMVC.Controllers
             return RedirectToAction("UsuariosView");
         }
 
+        //JUEGOS
+        public IActionResult JuegosView()
+        {
+            List<Juego> juegos = this.repoGame.GetJuegos();
+            return View(juegos);
+        }
+
         public async Task<IActionResult> CreateJuego()
         {
             List<Genero> generos = await this.repoGame.GetGenerosAsync();
@@ -108,13 +106,6 @@ namespace PulseGamingMVC.Controllers
             this.repoGame.RegistrarJuego(juego.NombreJuego, juego.IdGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView");
         }
-
-        public IActionResult DeleteJuego(int idJuego)
-        {
-            this.repoGame.DeleteJuego(idJuego);
-            return View();
-        }
-
         public async Task<IActionResult> ModificarJuego(int idJuego)
         {
             Juego juego = this.repoGame.FindJuego(idJuego);
@@ -131,6 +122,88 @@ namespace PulseGamingMVC.Controllers
         {
             this.repoGame.ModificarJuego(juego.IdJuego, juego.NombreJuego, juego.IdGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView", "Admin");
+        }
+
+        public IActionResult DeleteJuego(int idJuego)
+        {
+            this.repoGame.DeleteJuego(idJuego);
+            return View();
+        }
+
+        //Generos
+        public async Task<IActionResult> GenerosView()
+        {
+            List<Genero> generos = await this.repoGame.GetGenerosAsync();
+            return View(generos);
+        }
+
+        public IActionResult CreateGenero()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateGenero(Genero genero)
+        {
+            this.repoGame.CrearGenero(genero.NombreGenero);
+            return RedirectToAction("GenerosView", "Admin");
+        }
+
+        public async Task<IActionResult> ModificarGenero(int idGenero)
+        {
+            Genero genero = await this.repoGame.FindGeneroAsync(idGenero);
+            return View(genero);
+        }
+
+        [HttpPost]
+        public IActionResult ModificarGenero(Genero genero)
+        {
+            this.repoGame.ModificarGenero(genero.IdGenero, genero.NombreGenero);
+            return RedirectToAction("GenerosView", "Admin");
+        }
+
+        public IActionResult DeleteGenero(int idGenero)
+        {
+            this.repoGame.DeleteGenero(idGenero);
+            return View();
+        }
+
+        //Editores
+        public async Task<IActionResult> EditoresView()
+        {
+            List<Editor> editores = await this.repoGame.GetEditoresAsync();
+            return View(editores);
+        }
+
+        public IActionResult CreateEditor()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateEditor(Editor editor)
+        {
+            this.repoGame.CrearEditor(editor.NombreEditor);
+            return RedirectToAction("EditoresView", "Admin");
+        }
+
+        public async Task<IActionResult> ModificarEditor(int idEditor)
+        {
+            Editor editor = await this.repoGame.FindEditorAsync(idEditor);
+            return View(editor);
+        }
+
+        [HttpPost]
+        public IActionResult ModificarGenero(Editor editor)
+        {
+            this.repoGame.ModificarEditor(editor.IDEditor, editor.NombreEditor);
+            return RedirectToAction("EditoresView", "Admin");
+        }
+
+        public IActionResult DeleteEditor(int idEditor)
+        {
+            this.repoGame.DeleteEditor(idEditor);
+            return View();
         }
     }
 }

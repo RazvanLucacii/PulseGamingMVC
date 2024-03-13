@@ -7,8 +7,12 @@
 <h1>Generos</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Dashboard" asp-controller="Admin" class="btn btn-dark">
+        <i class="bi bi-arrow-90deg-left"></i>
+    </a>
+    <a asp-action="CreateGenero" class="btn btn-dark">Nuevo Genero</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
@@ -31,8 +35,8 @@
                 @Html.DisplayFor(modelItem => item.NombreGenero)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "ModificarGenero", new { idGenero = item.IdGenero }, new { @class = "btn btn-dark" }) |
+                @Html.ActionLink("Delete", "DeleteGenero", new { idGenero = item.IdGenero }, new { @class = "btn btn-dark" })
             </td>
         </tr>
 }

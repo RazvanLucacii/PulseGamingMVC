@@ -42,6 +42,50 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //	where IDJuego = @IDJuego
 //go
 
+//create procedure SP_CREATE_GENERO
+//(@NombreGenero nvarchar(100))
+//as
+//	DECLARE @NEXTID int
+//	select @NEXTID = Max(IDGenero) + 1 from Genero
+//	insert into Genero values(@NEXTID, @NombreGenero)
+//go
+
+//create procedure SP_CREATE_EDITOR
+//(@NombreEditor nvarchar(100))
+//as
+//	DECLARE @NEXTID int
+//	select @NEXTID = Max(IDEditor) + 1 from Editor
+//	insert into Editor values(@NEXTID, @NombreEditor)
+//go
+
+//create procedure SP_DELETE_GENERO
+//(@IDGenero int)
+//as
+//	delete from Genero
+//	where IDGenero = @IDGenero
+//go
+
+//create procedure SP_MODIFICAR_GENERO
+//(@IDGenero int, @NombreGenero nvarchar(100))
+//as
+//	update Genero set NombreGenero=@NombreGenero
+//	where IDGenero = @IDGenero
+//go
+
+//create procedure SP_DELETE_EDITOR
+//(@IDEditor int)
+//as
+//	delete from Editor
+//	where IDEditor = @IDEditor
+//go
+
+//create procedure SP_MODIFICAR_EDITOR
+//(@IDEditor int, @NombreEditor nvarchar(100))
+//as
+//	update Editor set NombreEditor=@NombreEditor
+//	where IDEditor = @IDEditor
+//go
+
 
 #endregion
 
@@ -60,6 +104,21 @@ namespace PulseGamingMVC.Repositories
             string sql = "SP_TODOS_JUEGOS";
             var consulta = this.context.Juegos.FromSqlRaw(sql);
             return consulta.ToList();
+        }
+
+        public List<Juego> GetJuegosPrecioAsce()
+        {
+            return this.context.Juegos.OrderBy(z => z.PrecioJuego).ToList();
+        }
+
+        public List<Juego> GetJuegosPrecioDesc()
+        {
+            return this.context.Juegos.OrderByDescending(z => z.PrecioJuego).ToList();
+        }
+
+        public List<Juego> GetJuegosBusqueda()
+        {
+            return this.context.Juegos.Where(z => z.NombreJuego.Contains("")).ToList();
         }
 
         public Juego FindJuego(int IdJuego)
@@ -113,5 +172,60 @@ namespace PulseGamingMVC.Repositories
         {
             return await this.context.Editores.ToListAsync();
         }
+
+        public async Task<Genero> FindGeneroAsync(int idGenero)
+        {
+            return await this.context.Generos.FirstOrDefaultAsync(z => z.IdGenero == idGenero);
+        }
+
+        public async Task<Editor> FindEditorAsync(int idEditor)
+        {
+            return await this.context.Editores.FirstOrDefaultAsync(z => z.IDEditor == idEditor);
+        }
+
+        public void CrearGenero(string nombre)
+        {
+            string sql = "SP_CREATE_GENERO @NombreGenero";
+            SqlParameter pamNombre = new SqlParameter("NombreGenero", nombre);
+            this.context.Database.ExecuteSqlRaw(sql, pamNombre);
+        }
+        
+        public void CrearEditor(string nombre)
+        {
+            string sql = "SP_CREATE_EDITOR @NombreEditor";
+            SqlParameter pamNombre = new SqlParameter("NombreEditor", nombre);
+            this.context.Database.ExecuteSqlRaw(sql, pamNombre);
+        }
+
+        public void DeleteGenero(int idGenero)
+        {
+            string sql = "SP_DELETE_GENERO @IDGenero";
+            SqlParameter pamid = new SqlParameter("@IDGenero", idGenero);
+            this.context.Database.ExecuteSqlRaw(sql, pamid);
+        }
+
+        public void DeleteEditor(int idEditor)
+        {
+            string sql = "SP_DELETE_EDITOR @IDEditor";
+            SqlParameter pamid = new SqlParameter("@IDEditor", idEditor);
+            this.context.Database.ExecuteSqlRaw(sql, pamid);
+        }
+
+        public void ModificarGenero(int idGenero, string nombre)
+        {
+            string sql = "SP_MODIFICAR_GENERO @IDGenero, @NombreGenero";
+            SqlParameter pamId = new SqlParameter("IDGenero", idGenero);
+            SqlParameter pamNombre = new SqlParameter("NombreGenero", nombre);
+            this.context.Database.ExecuteSqlRaw(sql, pamId, pamNombre);
+        }
+
+        public void ModificarEditor(int idEditor, string nombre)
+        {
+            string sql = "SP_MODIFICAR_EDITOR @IDEditor, @NombreEditor";
+            SqlParameter pamId = new SqlParameter("IDEditor", idEditor);
+            SqlParameter pamNombre = new SqlParameter("NombreEditor", nombre);
+            this.context.Database.ExecuteSqlRaw(sql, pamId, pamNombre);
+        }
+
     }
 }

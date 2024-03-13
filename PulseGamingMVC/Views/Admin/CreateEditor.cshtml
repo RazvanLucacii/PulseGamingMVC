@@ -1,0 +1,31 @@
+﻿@model PulseGamingMVC.Models.Editor
+
+@{
+    ViewData["Title"] = "CreateEditor";
+}
+
+<h1>Crear Editor</h1>
+
+<p>
+    <a asp-action="EditoresView" class="btn btn-dark"><i class="bi bi-arrow-90deg-left"></i></a>
+</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateEditor">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreEditor" class="control-label"></label>
+                <input asp-for="NombreEditor" class="form-control" />
+                <span asp-validation-for="NombreEditor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
