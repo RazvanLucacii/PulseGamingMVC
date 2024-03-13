@@ -130,7 +130,7 @@ namespace PulseGamingMVC.Controllers
         public IActionResult ModificarJuego(Juego juego)
         {
             this.repoGame.ModificarJuego(juego.IdJuego, juego.NombreJuego, juego.IdGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
-            return View();
+            return RedirectToAction("JuegosView", "Admin");
         }
     }
 }

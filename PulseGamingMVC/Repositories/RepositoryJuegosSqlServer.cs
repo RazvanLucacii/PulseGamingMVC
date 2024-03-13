@@ -38,7 +38,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //alter procedure SP_MODIFICAR_JUEGO
 //(@IDJuego int, @NombreJuego nvarchar(100), @IDGenero int, @ImagenJuego nvarchar(100), @PrecioJuego float, @Descripcion nvarchar(MAX), @IDEditor int)
 //as
-//	update Juego set NombreJuego=@NombreJuego, IDGenero = @IDGenero, ImagenJuego = @ImagenJuego, PrecioJuego = @PrecioJuego, DescripcionJuego = @Descripcion, IDEditor = @IDEditor where IDJuego = @IDJuego
+//	update Juego set NombreJuego=@NombreJuego, IDGenero = @IDGenero, ImagenJuego = @ImagenJuego, PrecioJuego = @PrecioJuego, DescripcionJuego = @Descripcion, IDEditor = @IDEditor
+//	where IDJuego = @IDJuego
 //go
 
 
