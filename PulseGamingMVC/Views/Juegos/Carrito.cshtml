@@ -8,7 +8,7 @@
 else
 {
     <div id="carrito">
-        @Html.Partial("_Carrito", Model)
+        <partial name="_Carrito"/>
     </div>
 <p>
         <a asp-action="FinalizarPedido" , asp-controller="Juegos" class="btn btn-dark" onclick="mostrarVentanaEmergente()">

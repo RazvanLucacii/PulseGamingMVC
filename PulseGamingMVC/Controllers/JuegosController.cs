@@ -73,10 +73,7 @@ namespace PulseGamingMVC.Controllers
 
         public IActionResult Pedidos()
         {
-            // Obtener el pedido de la sesión
             var pedido = HttpContext.Session.GetObject<Pedido>("PEDIDO");
-
-            // Mostrar la vista de pedidos con el pedido guardado en la sesión
             return View(pedido);
         }
 
@@ -92,9 +89,9 @@ namespace PulseGamingMVC.Controllers
             Pedido pedido = new Pedido
             {
                 FechaPedido = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Ciudad = ciudad, // Reemplaza con la ciudad real del usuario
-                Pais = pais, // Reemplaza con el país real del usuario
-                IDUsuario = 1, // Reemplaza con el ID real del usuario autenticado
+                Ciudad = ciudad,
+                Pais = pais, 
+                IDUsuario = 1, 
                 Total = total,
                 TotalProducto = string.Join(",", carrito.Select(item => $"{item.NombreJuego} ({item.Cantidad})"))
             };
@@ -109,44 +106,36 @@ namespace PulseGamingMVC.Controllers
         [HttpPost]
         public IActionResult IncrementarCantidad(int idJuego)
         {
-            // 1. Obtener el carrito actual del usuario
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-            // 2. Buscar el juego en el carrito por su ID
+            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+ 
             var juegoEnCarrito = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
 
-            // 3. Incrementar la cantidad del juego si se encontró en el carrito
             if (juegoEnCarrito != null)
             {
                 juegoEnCarrito.Cantidad++;
             }
 
-            // 4. Actualizar el carrito en la sesión
             HttpContext.Session.SetObject("CARRITO", carrito);
 
-            // 5. Devolver una vista parcial o un fragmento de HTML que representa la parte actualizada del carrito
             return PartialView("_Carrito", carrito);
         }
 
         [HttpPost]
         public IActionResult DecrementarCantidad(int idJuego)
         {
-            // 1. Obtener el carrito actual del usuario
+
             var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-            // 2. Buscar el juego en el carrito por su ID
             var juegoEnCarrito = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
 
-            // 3. Incrementar la cantidad del juego si se encontró en el carrito
             if (juegoEnCarrito != null)
             {
                 juegoEnCarrito.Cantidad--;
             }
 
-            // 4. Actualizar el carrito en la sesión
             HttpContext.Session.SetObject("CARRITO", carrito);
 
-            // 5. Devolver una vista parcial o un fragmento de HTML que representa la parte actualizada del carrito
             return PartialView("_Carrito", carrito);
         }
 
@@ -154,7 +143,6 @@ namespace PulseGamingMVC.Controllers
         {
             var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-            // Buscar el juego en el carrito y eliminarlo
             var juegoAEliminar = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
             if (juegoAEliminar != null)
             {
@@ -163,7 +151,6 @@ namespace PulseGamingMVC.Controllers
                 TempData["SuccessMessage"] = "Juego eliminado del carrito";
             }
 
-            // Redirigir de vuelta a la vista del carrito
             return PartialView("_Carrito", carrito);
         }
     }
