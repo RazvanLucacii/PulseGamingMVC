@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Extensions;
@@ -17,7 +18,12 @@ namespace PulseGamingMVC.Controllers
             this.repo = repo;
         }
 
-        public IActionResult Home(string precio, string search)
+        public IActionResult Inicio()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Games(string precio, string search)
         {
             if(precio == "desc")
             {
@@ -26,31 +32,25 @@ namespace PulseGamingMVC.Controllers
             }
             else if(precio == "asc")
             {
-                var juegosasc = this.repo.GetJuegosPrecioAsce() ;
+                var juegosasc = this.repo.GetJuegosPrecioAsce();
                 return View(juegosasc);
             }
             else
             {
                 List<Juego> juegos = this.repo.GetJuegos();
+                var generos = await this.repo.GetGenerosAsync(); 
+                ViewData["GENEROS"] = generos;
                 return View(juegos);
             }
 
-
         }
 
-        public IActionResult FiltrarJuegos(string precio)
+        public IActionResult ListarJuegosGeneros(int idgenero)
         {
-            if (precio == "desc")
-            {
-                @ViewData["JUEGOSDESC"] = this.repo.GetJuegosPrecioDesc();
-            }
-            else if (precio == "asc")
-            {
-                @ViewData["JUEGOSASCE"] = this.repo.GetJuegosPrecioAsce();
-            }
-
-            return RedirectToAction("Home", "Juegos");
+            var juegosPorGenero = this.repo.GetJuegosGeneros(idgenero);
+            return View(juegosPorGenero);
         }
+
 
         public IActionResult Details(int IdJuego)
         {
@@ -94,6 +94,44 @@ namespace PulseGamingMVC.Controllers
             }
             Juego juegoDetalle = this.repo.FindJuego(IdJuego.Value);
             return RedirectToAction("Details", juegoDetalle);
+        }
+
+        [HttpPost]
+        public IActionResult AñadirCarritoLista(int? IdJuego)
+        {
+            if (IdJuego != null)
+            {
+                var juego = this.repo.FindJuego(IdJuego.Value);
+                if (juego != null)
+                {
+                    var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+
+                    // Verificar si el juego ya está en el carrito
+                    var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
+                    if (existingItem != null)
+                    {
+                        existingItem.Cantidad++;
+                    }
+                    else
+                    {
+                        carrito.Add(new Carrito
+                        {
+                            IdJuego = juego.IdJuego,
+                            NombreJuego = juego.NombreJuego,
+                            PrecioJuego = juego.PrecioJuego,
+                            Cantidad = 1
+                        });
+
+                        TempData["SuccessMessage"] = "Juego añadido al carrito";
+                    }
+
+                    HttpContext.Session.SetObject("CARRITO", carrito);
+                    ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
+                }
+
+            }
+            List<Juego> juegos = this.repo.GetJuegos();
+            return RedirectToAction("Home", juegos);
         }
 
         public IActionResult Carrito()

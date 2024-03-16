@@ -1,0 +1,23 @@
+﻿<div class="container mt-5 mb-5" id="cuerpoinicio">
+    <div class="slider">
+        <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="8"><img src="~/images/imagenf124.jpg" class="imginicio" /></a></div>
+        <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="19"><img src="~/images/imagengta6.jpg" class="imginicio" /></a></div>
+        <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="17"><img src="~/images/imagenzoo.jpg" class="imginicio" /></a></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.slider').slick({
+                dots: true,
+                infinite: true,
+                speed: 500,
+                fade: true,
+                cssEase: 'linear',
+                autoplay: true,
+                autoplaySpeed: 3000,
+            });
+        });
+    </script>
+}

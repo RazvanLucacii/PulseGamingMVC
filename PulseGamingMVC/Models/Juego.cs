@@ -12,7 +12,7 @@ namespace PulseGamingMVC.Models
         [Column("NombreJuego")]
         public string? NombreJuego { get; set; }
         [Column("IDGenero")]
-        public int IdGenero { get; set; }
+        public int IDGenero { get; set; }
         [Column("ImagenJuego")]
         public string? ImagenJuego { get; set; }
         [Column("PrecioJuego")]
@@ -21,5 +21,6 @@ namespace PulseGamingMVC.Models
         public string? Descripcion { get; set; }
         [Column("IDEditor")]
         public int IdEditor { get; set; }
+
     }
 }

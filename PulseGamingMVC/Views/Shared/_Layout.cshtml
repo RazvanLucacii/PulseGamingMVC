@@ -10,10 +10,14 @@
     <title>@ViewData["Title"] - PulseGamingMVC</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/icons/bootstrap-icons/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <link rel="stylesheet" href="~/css/Inicio.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Games.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Registro.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true" />
@@ -24,7 +28,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Juegos" asp-action="Home">Pulse Gaming</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Juegos" asp-action="Inicio">Pulse Gaming</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -32,7 +36,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Home">Inicio</a>
+                            <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Inicio">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Games">Juegos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito</a>

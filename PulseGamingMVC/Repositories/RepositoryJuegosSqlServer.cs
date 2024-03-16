@@ -86,6 +86,14 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //	where IDEditor = @IDEditor
 //go
 
+//create procedure SP_FILTRAR_JUEGOS_CATEGORIAS
+//(@idgenero int)
+//as
+//	select * from Juego
+//	inner join Genero
+//	on juego.IDGenero=genero.IDGenero
+//	where genero.IDGenero=@idgenero
+//go
 
 #endregion
 
@@ -116,9 +124,13 @@ namespace PulseGamingMVC.Repositories
             return this.context.Juegos.OrderByDescending(z => z.PrecioJuego).ToList();
         }
 
-        public List<Juego> GetJuegosBusqueda()
+        public List<Juego> GetJuegosGeneros(int idgenero)
         {
-            return this.context.Juegos.Where(z => z.NombreJuego.Contains("")).ToList();
+            string sql = "SP_FILTRAR_JUEGOS_CATEGORIAS @idgenero";
+            SqlParameter pamID = new SqlParameter("idgenero", idgenero);
+            var consulta = this.context.Juegos.FromSqlRaw(sql, pamID);
+            List<Juego> juegos = consulta.ToList();
+            return juegos;
         }
 
         public Juego FindJuego(int IdJuego)

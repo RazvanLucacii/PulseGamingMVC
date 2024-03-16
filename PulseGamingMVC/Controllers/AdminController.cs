@@ -103,7 +103,7 @@ namespace PulseGamingMVC.Controllers
         [HttpPost]
         public IActionResult CreateJuego(Juego juego)
         {
-            this.repoGame.RegistrarJuego(juego.NombreJuego, juego.IdGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
+            this.repoGame.RegistrarJuego(juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView");
         }
         public async Task<IActionResult> ModificarJuego(int idJuego)
@@ -120,14 +120,14 @@ namespace PulseGamingMVC.Controllers
         [HttpPost]
         public IActionResult ModificarJuego(Juego juego)
         {
-            this.repoGame.ModificarJuego(juego.IdJuego, juego.NombreJuego, juego.IdGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
+            this.repoGame.ModificarJuego(juego.IdJuego, juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView", "Admin");
         }
 
         public IActionResult DeleteJuego(int idJuego)
         {
             this.repoGame.DeleteJuego(idJuego);
-            return View();
+            return RedirectToAction("JuegosView", "Admin");
         }
 
         //Generos
@@ -165,7 +165,7 @@ namespace PulseGamingMVC.Controllers
         public IActionResult DeleteGenero(int idGenero)
         {
             this.repoGame.DeleteGenero(idGenero);
-            return View();
+            return RedirectToAction("GenerosView", "Admin");
         }
 
         //Editores
@@ -203,7 +203,7 @@ namespace PulseGamingMVC.Controllers
         public IActionResult DeleteEditor(int idEditor)
         {
             this.repoGame.DeleteEditor(idEditor);
-            return View();
+            return RedirectToAction("EditoresView", "Admin");
         }
     }
 }
