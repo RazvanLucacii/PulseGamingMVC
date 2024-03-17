@@ -1,6 +1,11 @@
 ﻿@model List<Carrito>
 
+@{
+    var user = Context.Session.GetString("USUARIO");
+}
+
 <h2>Carrito de Compras</h2>
+
 @if (Model.Count == 0)
 {
     <p>No hay ningún artículo en tu carrito.</p>
@@ -10,11 +15,17 @@ else
     <div id="carrito">
         <partial name="_Carrito"/>
     </div>
-<p>
+    <p>
+        @if (user == null)
+        {
+            <script>
+                window.location.href = '/Usuarios/Login';
+            </script>
+        }
         <a asp-action="FinalizarPedido" , asp-controller="Juegos" class="btn btn-dark" onclick="mostrarVentanaEmergente()">
-        Finalizar Compra
-    </a>
-</p>
+            Finalizar Compra
+        </a>
+    </p>
 }
 
 @section Scripts{
@@ -57,7 +68,6 @@ else
     <script>
         function mostrarVentanaEmergente() {
             event.preventDefault();
-            // Mostrar la ventana emergente con SweetAlert2
             Swal.fire({
                 title: 'Finalizar Compra',
                 html: '<label for="ciudad">Ciudad:</label><input type="text" id="ciudad" name="ciudad" class="swal2-input" required><br><label for="pais">País:</label><input type="text" id="pais" name="pais" class="swal2-input" required>',
@@ -83,6 +93,11 @@ else
                     });
                 }
             });
+        }
+    </script>
+    <script>
+        function redirectToLogin() {
+            window.location.href = '/Usuarios/Login';
         }
     </script>
 }

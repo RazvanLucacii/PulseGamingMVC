@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Extensions;
@@ -23,34 +24,37 @@ namespace PulseGamingMVC.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Games(string precio, string search)
+        public async Task<IActionResult> Games(string precio, string search, int? posicion)
         {
-            if(precio == "desc")
+            ViewData["PRECIO"] = precio;
+
+            if (precio == "desc")
             {
+                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
+                ViewData["REGISTROS"] = numeroRegistros;
                 var juegosDesc = this.repo.GetJuegosPrecioDesc();
                 return View(juegosDesc);
             }
             else if(precio == "asc")
             {
+                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
+                ViewData["REGISTROS"] = numeroRegistros;
                 var juegosasc = this.repo.GetJuegosPrecioAsce();
                 return View(juegosasc);
             }
             else
             {
-                List<Juego> juegos = this.repo.GetJuegos();
-                var generos = await this.repo.GetGenerosAsync(); 
-                ViewData["GENEROS"] = generos;
+                if (posicion == null)
+                {
+                    posicion = 1;
+                }
+                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
+                ViewData["REGISTROS"] = numeroRegistros;
+                List<Juego> juegos = await this.repo.GetGrupoJuegosAsync(posicion.Value);
                 return View(juegos);
             }
 
         }
-
-        public IActionResult ListarJuegosGeneros(int idgenero)
-        {
-            var juegosPorGenero = this.repo.GetJuegosGeneros(idgenero);
-            return View(juegosPorGenero);
-        }
-
 
         public IActionResult Details(int IdJuego)
         {
@@ -61,77 +65,92 @@ namespace PulseGamingMVC.Controllers
         [HttpPost]
         public IActionResult AñadirCarrito(int? IdJuego)
         {
-            if (IdJuego != null)
+            var user = HttpContext.Session.GetString("USUARIO");
+            if (user == null)
             {
-                var juego = this.repo.FindJuego(IdJuego.Value);
-                if (juego != null)
+                return RedirectToAction("Login", "Usuarios");
+            }
+            else
+            {
+                if (IdJuego != null)
                 {
-                    var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+                    var juego = this.repo.FindJuego(IdJuego.Value);
+                    if (juego != null)
+                    {
+                        var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-                    // Verificar si el juego ya está en el carrito
-                    var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
-                    if (existingItem != null)
-                    {
-                        existingItem.Cantidad++;
-                    }
-                    else
-                    {
-                        carrito.Add(new Carrito
+                        // Verificar si el juego ya está en el carrito
+                        var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
+                        if (existingItem != null)
                         {
-                            IdJuego = juego.IdJuego,
-                            NombreJuego = juego.NombreJuego,
-                            PrecioJuego = juego.PrecioJuego,
-                            Cantidad = 1
-                        });
+                            existingItem.Cantidad++;
+                        }
+                        else
+                        {
+                            carrito.Add(new Carrito
+                            {
+                                IdJuego = juego.IdJuego,
+                                NombreJuego = juego.NombreJuego,
+                                PrecioJuego = juego.PrecioJuego,
+                                Cantidad = 1
+                            });
 
-                        TempData["SuccessMessage"] = "Juego añadido al carrito";
+                            TempData["SuccessMessage"] = "Juego añadido al carrito";
+                        }
+
+                        HttpContext.Session.SetObject("CARRITO", carrito);
+                        ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
                     }
 
-                    HttpContext.Session.SetObject("CARRITO", carrito);
-                    ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
                 }
-
             }
             Juego juegoDetalle = this.repo.FindJuego(IdJuego.Value);
             return RedirectToAction("Details", juegoDetalle);
         }
 
         [HttpPost]
-        public IActionResult AñadirCarritoLista(int? IdJuego)
+        public IActionResult AñadirAlCarritoDesdeLista(int? idJuego)
         {
-            if (IdJuego != null)
+            var user = HttpContext.Session.GetString("USUARIO");
+            if(user == null)
             {
-                var juego = this.repo.FindJuego(IdJuego.Value);
-                if (juego != null)
-                {
-                    var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-
-                    // Verificar si el juego ya está en el carrito
-                    var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
-                    if (existingItem != null)
-                    {
-                        existingItem.Cantidad++;
-                    }
-                    else
-                    {
-                        carrito.Add(new Carrito
-                        {
-                            IdJuego = juego.IdJuego,
-                            NombreJuego = juego.NombreJuego,
-                            PrecioJuego = juego.PrecioJuego,
-                            Cantidad = 1
-                        });
-
-                        TempData["SuccessMessage"] = "Juego añadido al carrito";
-                    }
-
-                    HttpContext.Session.SetObject("CARRITO", carrito);
-                    ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
-                }
-
+                return RedirectToAction("Login", "Usuarios");
             }
-            List<Juego> juegos = this.repo.GetJuegos();
-            return RedirectToAction("Home", juegos);
+            else
+            {
+                if (idJuego != null)
+                {
+                    var juego = repo.FindJuego(idJuego.Value);
+                    if (juego != null)
+                    {
+                        var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+
+                        // Verificar si el juego ya está en el carrito
+                        var existingItem = carrito.FirstOrDefault(item => item.IdJuego == idJuego.Value);
+                        if (existingItem != null)
+                        {
+                            existingItem.Cantidad++;
+                        }
+                        else
+                        {
+                            carrito.Add(new Carrito
+                            {
+                                IdJuego = juego.IdJuego,
+                                NombreJuego = juego.NombreJuego,
+                                PrecioJuego = juego.PrecioJuego,
+                                Cantidad = 1
+                            });
+
+                            ViewData["SuccessMessage"] = "Juego añadido al carrito";
+                        }
+
+                        HttpContext.Session.SetObject("CARRITO", carrito);
+                        ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
+                    }
+                }
+            }
+
+            return RedirectToAction("Games");
         }
 
         public IActionResult Carrito()

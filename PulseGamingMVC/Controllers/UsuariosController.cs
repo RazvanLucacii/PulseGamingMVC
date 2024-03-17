@@ -28,7 +28,7 @@ namespace PulseGamingMVC.Controllers
         {
             await this.repo.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
             ViewData["MENSAJE"] = "Usuario registrado correctamente.";
-            return View();
+            return RedirectToAction("Login", "Usuarios");
         }
 
         public IActionResult Login()
@@ -58,7 +58,7 @@ namespace PulseGamingMVC.Controllers
                 else
                 {
                     HttpContext.Session.SetString("USUARIO", user.ToString());
-                    return RedirectToAction("Home", "Juegos");
+                    return RedirectToAction("Inicio", "Juegos");
                 }
             }
         }

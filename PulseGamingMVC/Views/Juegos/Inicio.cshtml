@@ -1,8 +1,75 @@
-﻿<div class="container mt-5 mb-5" id="cuerpoinicio">
+﻿<div class="container mt-5 mb-5">
     <div class="slider">
         <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="8"><img src="~/images/imagenf124.jpg" class="imginicio" /></a></div>
         <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="19"><img src="~/images/imagengta6.jpg" class="imginicio" /></a></div>
         <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="17"><img src="~/images/imagenzoo.jpg" class="imginicio" /></a></div>
+    </div>
+
+    <div class="mt-5 mb-5">
+        <h1>Recomendaciones para ti</h1>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-5">
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="~/images/bo3.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">Call Of Duty: Black Ops III</h5>
+                        <p class="card-text">59,99 €</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-dark">
+                                Favorito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="~/images/gta5.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">Grand Theft Auto V</h5>
+                        <p class="card-text">29,99 €</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-dark">
+                                Favorito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="~/images/eldenring.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">Elden Ring</h5>
+                        <p class="card-text">59,99 €</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-dark">
+                                Favorito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="~/images/bo3.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title">EA SPORTS FC 24</h5>
+                        <p class="card-text">16,62 €</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button class="btn btn-dark">
+                                Favorito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-5 mb-5">
+            <a class="btn btn-dark" asp-action="Games" asp-controller="Juegos">
+                Ver todo
+            </a>
+        </div>
     </div>
 </div>
 

@@ -22,5 +22,7 @@ namespace PulseGamingMVC.Repositories
         void DeleteGenero(int idGenero);
         Task<Editor> FindEditorAsync(int idEditor);
         Task<Genero> FindGeneroAsync(int idGenero);
+        Task<int> GetNumeroJuegosAsync();
+        Task<List<Juego>> GetGrupoJuegosAsync(int posicion);
     }
 }

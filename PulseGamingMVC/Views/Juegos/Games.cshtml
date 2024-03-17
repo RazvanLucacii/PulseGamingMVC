@@ -2,7 +2,8 @@
 
 @{
     ViewData["Title"] = "Juegos";
-    var generos = ViewData["GENEROS"] as List<Genero>;
+    int numeroRegistros = (int)ViewData["REGISTROS"];
+    int numeroPagina = 1;
 }
 
 <div class="container mt-5 mb-5">
@@ -15,7 +16,6 @@
         </select>
         <button type="submit" value="search">Filtrar</button>
     }
-    
     <hr />
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-5">
         @foreach (Juego game in Model)
@@ -28,10 +28,9 @@
                         <p class="card-text">@game.PrecioJuego €</p>
                         <div class="d-flex justify-content-between align-items-center">
                             @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = game.IdJuego }, new { @class = "btn btn-dark" })
-                            <form method="post" asp-action="AñadirCarritoLista" enctype="multipart/form-data">
-                                <button type="submit" class="btn btn-dark" id="comprarButton">
-                                    Comprar
-                                </button>
+                            <form method="post" asp-action="AñadirAlCarritoDesdeLista">
+                                <input type="hidden" name="idJuego" value="@game.IdJuego" />
+                                <button type="submit" class="btn btn-dark" id="comprarButton">Comprar</button>
                             </form>
                         </div>
                     </div>
@@ -39,5 +38,22 @@
             </div>
         }
     </div>
+    @if (ViewData["PRECIO"] == null)
+    {
+        <hr />
+        <ul class="list-group list-group-horizontal">
+            @{
+                for (int i = 1; i <= numeroRegistros; i += 4)
+                {
+                    <li class="list-group-item list-group-item-danger">
+                        <a asp-controller="Juegos" asp-action="Games" asp-route-posicion="@i" asp-route-precio="@ViewData["PRECIO"]">
+                            @numeroPagina
+                        </a>
+                    </li>
+                    numeroPagina++;
+                }
+            }
+        </ul>
+    }
 </div>
 

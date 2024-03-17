@@ -95,6 +95,21 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //	where genero.IDGenero=@idgenero
 //go
 
+//create view V_GRUPO_JUEGOS
+//as
+//	select cast(
+//    ROW_NUMBER() OVER (ORDER BY NombreJuego) as int) AS POSICION
+//    , IDJuego, NombreJuego, IDGenero, ImagenJuego, PrecioJuego, DescripcionJuego, IDEditor from Juego
+//go
+
+//create procedure SP_GRUPO_JUEGOS
+//(@posicion int)
+//as
+//	select IDJuego, NombreJuego, IDGenero, ImagenJuego, PrecioJuego, DescripcionJuego, IDEditor
+//	from V_GRUPO_JUEGOS
+//	where posicion >= @posicion and posicion < (@posicion + 4)
+//go
+
 #endregion
 
 namespace PulseGamingMVC.Repositories
@@ -239,5 +254,18 @@ namespace PulseGamingMVC.Repositories
             this.context.Database.ExecuteSqlRaw(sql, pamId, pamNombre);
         }
 
+
+        public async Task<List<Juego>> GetGrupoJuegosAsync(int posicion)
+        {
+            string sql = "SP_GRUPO_JUEGOS @posicion";
+            SqlParameter pamPosicion = new SqlParameter("posicion", posicion);
+            var consulta = this.context.Juegos.FromSqlRaw(sql, pamPosicion);
+            return await consulta.ToListAsync();
+        }
+
+        public async Task<int> GetNumeroJuegosAsync()
+        {
+            return await this.context.Juegos.CountAsync();
+        }
     }
 }
