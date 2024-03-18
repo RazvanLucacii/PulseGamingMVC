@@ -1,4 +1,8 @@
-﻿<div class="container mt-5 mb-5">
+﻿@{
+    List<Juego> favoritos = memoryCache.Get<List<Juego>>("FAVORITOS");
+}
+
+<div class="container mt-5 mb-5">
     <div class="slider">
         <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="8"><img src="~/images/imagenf124.jpg" class="imginicio" /></a></div>
         <div><a asp-action="Details" asp-controller="Juegos" asp-route-IdJuego="19"><img src="~/images/imagengta6.jpg" class="imginicio" /></a></div>
@@ -16,9 +20,6 @@
                         <p class="card-text">59,99 €</p>
                         <div class="d-flex justify-content-between align-items-center">
                             @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = 1 }, new { @class = "btn btn-dark" })
-                            <button class="btn btn-dark">
-                                Favorito
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -31,9 +32,6 @@
                         <p class="card-text">29,99 €</p>
                         <div class="d-flex justify-content-between align-items-center">
                             @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = 18 }, new { @class = "btn btn-dark" })
-                            <button class="btn btn-dark">
-                                Favorito
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -46,24 +44,18 @@
                         <p class="card-text">59,99 €</p>
                         <div class="d-flex justify-content-between align-items-center">
                             @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = 16 }, new { @class = "btn btn-dark" })
-                            <button class="btn btn-dark">
-                                Favorito
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card shadow-sm">
-                    <img src="~/images/bo3.jpg">
+                    <img src="~/images/FC24.jpg">
                     <div class="card-body">
                         <h5 class="card-title">EA SPORTS FC 24</h5>
                         <p class="card-text">16,62 €</p>
                         <div class="d-flex justify-content-between align-items-center">
                             @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = 6 }, new { @class = "btn btn-dark" })
-                            <button class="btn btn-dark">
-                                Favorito
-                            </button>
                         </div>
                     </div>
                 </div>

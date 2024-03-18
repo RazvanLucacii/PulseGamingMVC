@@ -1,0 +1,49 @@
+﻿﻿@{
+    List<Juego> juegos = memoryCache.Get<List<Juego>>("FAVORITOS");
+}
+
+@{
+    ViewData["Title"] = "JuegosFavoritos";
+}
+
+<h1>Juegos Favoritos</h1>
+
+@if (juegos == null)
+{
+    <h2>No tienes juegos favoritos</h2>
+}
+
+@if (juegos != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Juego item in juegos)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreJuego)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrecioJuego)
+                    </td>
+                    <td>
+                        <img src="~/images/@Html.DisplayFor(modelItem => item.ImagenJuego)" style="width:80px; height:100px" />
+                    </td>
+                    <td>
+                        <a asp-action="JuegosFavoritos" asp-controller="Juegos" asp-route-ideliminar="@item.IdJuego" class="btn btn-danger">
+                            Eliminar Favorito
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

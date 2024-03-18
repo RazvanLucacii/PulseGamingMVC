@@ -1,6 +1,7 @@
 ﻿@{
     string? user = Context.Session.GetString("USUARIO");
     List<Carrito> juegosCarrito = Context.Session.GetObject<List<Carrito>>("CARRITO");
+    List<Juego> favoritos = memoryCache.Get<List<Juego>>("FAVORITOS");
 }
 
 <!DOCTYPE html>
@@ -43,7 +44,16 @@
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Games">Juegos</a>
                         </li>
                         @await Component.InvokeAsync("MenuCategorias")
-
+                        <li class="nav-item">
+                            @if (favoritos != null)
+                            {
+                                <a asp-controller="Juegos" asp-action="JuegosFavoritos" class="nav-link botonesCustom">Favoritos @favoritos.Count</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Juegos" asp-action="JuegosFavoritos" class="nav-link botonesCustom">Favoritos 0</a>
+                            }
+                        </li>
                         <li class="nav-item">
                             @if (juegosCarrito != null)
                             {

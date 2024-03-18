@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Extensions;
 using PulseGamingMVC.Models;
@@ -13,10 +14,12 @@ namespace PulseGamingMVC.Controllers
     public class JuegosController : Controller
     {
         private IRepositoryJuegos repo;
+        private IMemoryCache memoryCache;
 
-        public JuegosController(IRepositoryJuegos repo)
+        public JuegosController(IRepositoryJuegos repo, IMemoryCache memoryCache)
         {
             this.repo = repo;
+            this.memoryCache = memoryCache;
         }
 
         public IActionResult Inicio()
@@ -24,8 +27,39 @@ namespace PulseGamingMVC.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Games(string precio, string search, int? posicion)
+        public async Task<IActionResult> JuegosFavoritos(int? ideliminar)
         {
+            var user = HttpContext.Session.GetString("USUARIO");
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Usuarios");
+            }
+            else
+            {
+                    if (ideliminar != null)
+                    {
+                        List<Juego> juegos = this.memoryCache.Get<List<Juego>>("FAVORITOS");
+
+                        Juego juego = juegos.FirstOrDefault(z => z.IdJuego == ideliminar.Value);
+
+                        juegos.Remove(juego);
+
+                        if (juegos.Count == 0)
+                        {
+                            this.memoryCache.Remove("FAVORITOS");
+                        }
+                        else
+                        {
+                            this.memoryCache.Set("FAVORITOS", juegos);
+                        }
+                    }
+                return View();
+            }
+        }
+
+        public async Task<IActionResult> Games(string precio, string search, int? posicion, int? idfavorito)
+        {
+
             ViewData["PRECIO"] = precio;
             if (posicion == null)
             {
@@ -47,6 +81,29 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
+                if (idfavorito != null)
+                {
+                    //COMO ALMACENAMOS EN CLIENTE CACHE, VAMOS A UTILIZAR
+                    //LA COLECCION DE EMPLEADOS DIRECTAMENTE
+                    List<Juego> juegosFavoritos;
+                    if (this.memoryCache.Get("FAVORITOS") == null)
+                    {
+                        //CREAMOS NUESTRA COLECCION
+                        juegosFavoritos = new List<Juego>();
+                    }
+                    else
+                    {
+                        //RECUPERAMOS LOS EMPLEADOS QUE YA TENGAMOS EN CACHE
+                        juegosFavoritos =
+                            this.memoryCache.Get<List<Juego>>("FAVORITOS");
+                    }
+                    //BUSCAMOS AL EMPLEADO POR SU ID DE FAVORITO
+                    Juego juego =
+                        this.repo.FindJuego(idfavorito.Value);
+                    juegosFavoritos.Add(juego);
+                    //ALMACENAMOS LOS NUEVOS DATOS DENTRO DE CACHE
+                    this.memoryCache.Set("FAVORITOS", juegosFavoritos);
+                }
                 List<Juego> juegos = await this.repo.GetGrupoJuegosAsync(posicion.Value);
                 return View(juegos);
             }
@@ -98,11 +155,9 @@ namespace PulseGamingMVC.Controllers
                                 Cantidad = 1
                             });
 
-                            TempData["SuccessMessage"] = "Juego añadido al carrito";
                         }
 
                         HttpContext.Session.SetObject("CARRITO", carrito);
-                        ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
                     }
 
                 }
@@ -143,11 +198,9 @@ namespace PulseGamingMVC.Controllers
                                 Cantidad = 1
                             });
 
-                            ViewData["SuccessMessage"] = "Juego añadido al carrito";
                         }
 
                         HttpContext.Session.SetObject("CARRITO", carrito);
-                        ViewData["MENSAJE"] = "Juegos en el carrito: " + carrito.Count;
                     }
                 }
             }
@@ -157,9 +210,16 @@ namespace PulseGamingMVC.Controllers
 
         public IActionResult Carrito()
         {
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-            
-            return View(carrito);
+            var user = HttpContext.Session.GetString("USUARIO");
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Usuarios");
+            }
+            else
+            { 
+                var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+                return View(carrito);
+            }
 
         }
 
@@ -240,7 +300,6 @@ namespace PulseGamingMVC.Controllers
             {
                 carrito.Remove(juegoAEliminar);
                 HttpContext.Session.SetObject("CARRITO", carrito);
-                TempData["SuccessMessage"] = "Juego eliminado del carrito";
             }
 
             return PartialView("_Carrito", carrito);
