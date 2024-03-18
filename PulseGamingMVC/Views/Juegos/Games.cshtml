@@ -38,7 +38,7 @@
                             </form>
                             @if (favoritos == null)
                             {
-                                <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark">
+                                <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark favorite-button" data-id="@game.IdJuego">
                                     <i class="bi bi-heart"></i>
                                 </a>
                             }
@@ -50,7 +50,7 @@
                                 }
                                 else
                                 {
-                                    <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark">
+                                    <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark favorite-button" data-id="@game.IdJuego">
                                         <i class="bi bi-heart"></i>
                                     </a>
                                 }
