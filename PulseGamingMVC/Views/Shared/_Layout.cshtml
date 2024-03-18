@@ -1,5 +1,6 @@
 ﻿@{
     string? user = Context.Session.GetString("USUARIO");
+    List<Carrito> juegosCarrito = Context.Session.GetObject<List<Carrito>>("CARRITO");
 }
 
 <!DOCTYPE html>
@@ -44,7 +45,14 @@
                         @await Component.InvokeAsync("MenuCategorias")
 
                         <li class="nav-item">
-                            <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito</a>
+                            @if (juegosCarrito != null)
+                            {
+                                <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito @juegosCarrito.Count</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito 0</a>
+                            }
                         </li>
                     </ul>
                     <ul class="navbar-nav float-end">

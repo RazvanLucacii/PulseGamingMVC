@@ -11,37 +11,31 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateUsuario">
+        <form asp-action="CreateUsuario" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" name="nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" name="email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <input type="text" name="nombre" placeholder="Nombre" class="form-control">
             </div>
             <div class="form-group">
                 <label asp-for="Apellidos" class="control-label"></label>
-                <input asp-for="Apellidos" name="apellidos" class="form-control" />
-                <span asp-validation-for="Apellidos" class="text-danger"></span>
+                <input type="text" name="apellidos" placeholder="Apellidos" class="form-control">
             </div>
             <div class="form-group">
-                <label asp-for="Telefono" class="control-label"></label>
-                <input asp-for="Telefono" name="telefono" class="form-control" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
+                <label asp-for="Email" class="control-label"></label>
+                <input type="text" name="email" placeholder="Email" class="form-control">
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" type="password" name="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+                <input type="password" name="password" placeholder="Password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label"></label>
+                <input type="text" name="telefono" placeholder="Telefono" class="form-control">
             </div>
             <div class="form-group">
                 <label asp-for="IDRole" class="control-label"></label>
-                <input asp-for="IDRole" name="IDRole" class="form-control" />
-                <span asp-validation-for="IDRole" class="text-danger"></span>
+                <input type="text" name="IDRole" placeholder="idrole" class="form-control">
             </div>
             <br />
             <div class="form-group">

@@ -55,7 +55,6 @@ namespace PulseGamingMVC.Controllers
         public IActionResult CreateUsuario(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
         {
             this.repoUsu.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
-            ViewData["MENSAJE"] = "Usuario registrado correctamente.";
             return View();
         }
 
@@ -184,7 +183,7 @@ namespace PulseGamingMVC.Controllers
         public IActionResult CreateEditor(Editor editor)
         {
             this.repoGame.CrearEditor(editor.NombreEditor);
-            return RedirectToAction("EditoresView", "Admin");
+            return RedirectToAction("EditoresView");
         }
 
         public async Task<IActionResult> ModificarEditor(int idEditor)
@@ -194,7 +193,7 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ModificarGenero(Editor editor)
+        public IActionResult ModificarEditor(Editor editor)
         {
             this.repoGame.ModificarEditor(editor.IDEditor, editor.NombreEditor);
             return RedirectToAction("EditoresView", "Admin");

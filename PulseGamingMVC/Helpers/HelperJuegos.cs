@@ -5,7 +5,7 @@ namespace PulseGamingMVC.Helpers
 {
     public class HelperJuegos
     {
-        //vamos a tener un par de metodos que no tienen nada que ver con criptografia
+
         public static string GenerateSalt()
         {
             Random random = new Random();
@@ -19,7 +19,6 @@ namespace PulseGamingMVC.Helpers
             return salt;
         }
 
-        //necesitamos metodo para comparar si los password son iguales. Debemos comparar a nivel de byte
 
         public static bool CompareArrays(byte[] a, byte[] b)
         {
@@ -32,7 +31,6 @@ namespace PulseGamingMVC.Helpers
             {
                 for (int i = 0; i < a.Length; i++)
                 {
-                    //preguntar el contenido de bytes si es distinto
                     if (a[i].Equals(b[i]) == false)
                     {
                         iguales = false;
@@ -43,16 +41,13 @@ namespace PulseGamingMVC.Helpers
             return iguales;
         }
 
-        //tenemos un metodo para cifrar el password
-        //recibimos el password (string) y el salt(string)
-        //devolvemos el array de bytes[] del resultado cifrado
         public static byte[] EncryptPassword(string password, string salt)
         {
             string contenido = password + salt;
             SHA512 sha = SHA512.Create();
-            //convertimos contenido a bytes[]
+
             byte[] salida = Encoding.UTF8.GetBytes(contenido);
-            //creamos las iteraciones
+
             for (int i = 1; i <= 114; i++)
             {
                 salida = sha.ComputeHash(salida);

@@ -56,9 +56,7 @@ namespace PulseGamingMVC.Repositories
             user.Email = email;
             user.Telefono = telefono;
             user.IDRole = IDRole;
-            //CADA USUARIO TENDRA UN SALT DISTINTO
             user.Salt = HelperJuegos.GenerateSalt();
-            //GUARDAMOS EL PASSWORD EN BYTE[]
             user.Password =
                 HelperJuegos.EncryptPassword(password, user.Salt);
             this.context.Usuarios.Add(user);

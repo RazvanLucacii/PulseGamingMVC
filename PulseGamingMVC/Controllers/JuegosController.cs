@@ -107,8 +107,7 @@ namespace PulseGamingMVC.Controllers
 
                 }
             }
-            Juego juegoDetalle = this.repo.FindJuego(IdJuego.Value);
-            return RedirectToAction("Details", juegoDetalle);
+            return RedirectToAction("Carrito");
         }
 
         [HttpPost]
@@ -153,12 +152,13 @@ namespace PulseGamingMVC.Controllers
                 }
             }
 
-            return RedirectToAction("Games");
+            return RedirectToAction("Carrito");
         }
 
         public IActionResult Carrito()
         {
             var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+            
             return View(carrito);
 
         }
