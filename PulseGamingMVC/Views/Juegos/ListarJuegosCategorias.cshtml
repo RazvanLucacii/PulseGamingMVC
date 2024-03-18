@@ -1,0 +1,23 @@
+﻿@model List<Juego>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-5">
+    @foreach (Juego game in Model)
+    {
+        <div class="col">
+            <div class="card shadow-sm m-auto">
+                <img src="~/images/@game.ImagenJuego">
+                <div class="card-body">
+                    <h5 class="card-title">@game.NombreJuego</h5>
+                    <p class="card-text">@game.PrecioJuego €</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        @Html.ActionLink("Detalles", "Details", "Juegos", new { IdJuego = game.IdJuego }, new { @class = "btn btn-dark" })
+                        <form method="post" asp-action="AñadirAlCarritoDesdeLista">
+                            <input type="hidden" name="idJuego" value="@game.IdJuego" />
+                            <button type="submit" class="btn btn-dark" id="comprarButton">Comprar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

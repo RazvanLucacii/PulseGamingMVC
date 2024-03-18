@@ -41,6 +41,8 @@
                         <li class="nav-item">
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Games">Juegos</a>
                         </li>
+                        @await Component.InvokeAsync("MenuCategorias")
+
                         <li class="nav-item">
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito</a>
                         </li>

@@ -1,18 +1,14 @@
 ﻿.botonesCustom {
-    /* border: 1px solid #3079ed; */
     border: 0px;
     color: #fff;
     text-shadow: 0 1px rgba(0,0,0,0.1);
     background-color: rgba(9,9,121,1);
-    /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#4787ed)); */
 }
 
     .botonesCustom:hover {
-        /* border: 1px solid #2f5bb7; */
         border: 0px;
         text-shadow: 0 1px rgba(0,0,0,0.3);
         background-color: rgba(34,193,195,1);
-        /* background-image: -webkit-gradient(linear, 0 0, 0 100%,   from(#4d90fe), to(#357ae8)); */
     }
 
 img {
@@ -45,6 +41,18 @@ a{
 
 .navbar-toggler{
     background-color: aqua;
+}
+
+#paginacion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:20px;
+}
+
+.active-pagination {
+    background-color: rgba(9,9,121,1);
+    color:white;
 }
 
 

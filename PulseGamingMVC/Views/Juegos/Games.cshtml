@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Juegos";
     int numeroRegistros = (int)ViewData["REGISTROS"];
+    int posicion = (int)ViewData["POSICION"];
+    var generos = ViewData["GENEROS"] as List<Genero>;
     int numeroPagina = 1;
 }
 
@@ -16,12 +18,15 @@
         </select>
         <button type="submit" value="search">Filtrar</button>
     }
+    <div>
+
+    </div>
     <hr />
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-5">
         @foreach (Juego game in Model)
         {
             <div class="col">
-                <div class="card shadow-sm">
+                <div class="card shadow-sm m-auto">
                     <img src="~/images/@game.ImagenJuego">
                     <div class="card-body">
                         <h5 class="card-title">@game.NombreJuego</h5>
@@ -38,22 +43,24 @@
             </div>
         }
     </div>
-    @if (ViewData["PRECIO"] == null)
-    {
-        <hr />
-        <ul class="list-group list-group-horizontal">
-            @{
-                for (int i = 1; i <= numeroRegistros; i += 4)
-                {
-                    <li class="list-group-item list-group-item-danger">
-                        <a asp-controller="Juegos" asp-action="Games" asp-route-posicion="@i" asp-route-precio="@ViewData["PRECIO"]">
-                            @numeroPagina
+    <div id="paginacion">
+        @if (ViewData["PRECIO"] == null)
+        {
+            <hr />
+            <ul class="list-group list-group-horizontal">
+                @{
+                    for (int i = 1; i <= numeroRegistros; i += 4)
+                    {
+                        <a asp-controller="Juegos" asp-action="Games" asp-route-posicion="@i" asp-route-precio="@ViewData["PRECIO"]" style="text-decoration: none">
+                        <li class="@(i == posicion ? "list-group-item active-pagination" : "list-group-item")" style="@(i == posicion ? " " : " background-color: rgba(34,193,195,1)")">
+                                @numeroPagina
+                            </li>
                         </a>
-                    </li>
-                    numeroPagina++;
+                        numeroPagina++;
+                    }
                 }
-            }
-        </ul>
-    }
+            </ul>
+        }
+    </div>
 </div>
 

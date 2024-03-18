@@ -27,29 +27,26 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> Games(string precio, string search, int? posicion)
         {
             ViewData["PRECIO"] = precio;
+            if (posicion == null)
+            {
+                posicion = 1;
+            }
+            int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
+            ViewData["REGISTROS"] = numeroRegistros;
+            ViewData["POSICION"] = posicion;
 
             if (precio == "desc")
             {
-                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
-                ViewData["REGISTROS"] = numeroRegistros;
                 var juegosDesc = this.repo.GetJuegosPrecioDesc();
                 return View(juegosDesc);
             }
             else if(precio == "asc")
             {
-                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
-                ViewData["REGISTROS"] = numeroRegistros;
                 var juegosasc = this.repo.GetJuegosPrecioAsce();
                 return View(juegosasc);
             }
             else
             {
-                if (posicion == null)
-                {
-                    posicion = 1;
-                }
-                int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
-                ViewData["REGISTROS"] = numeroRegistros;
                 List<Juego> juegos = await this.repo.GetGrupoJuegosAsync(posicion.Value);
                 return View(juegos);
             }
@@ -60,6 +57,12 @@ namespace PulseGamingMVC.Controllers
         {
             Juego juegoDetalle = this.repo.FindJuego(IdJuego);
             return View(juegoDetalle);
+        }
+
+        public async Task<IActionResult> ListarJuegosCategorias(int idgenero)
+        {
+            List<Juego> juegosCategorias = this.repo.GetJuegosGeneros(idgenero);
+            return View(juegosCategorias);
         }
 
         [HttpPost]

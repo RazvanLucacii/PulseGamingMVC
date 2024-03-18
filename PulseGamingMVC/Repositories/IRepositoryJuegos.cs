@@ -24,5 +24,7 @@ namespace PulseGamingMVC.Repositories
         Task<Genero> FindGeneroAsync(int idGenero);
         Task<int> GetNumeroJuegosAsync();
         Task<List<Juego>> GetGrupoJuegosAsync(int posicion);
+        void InsertarPedido(DateTime fecha, string ciudad, string pais, int idusuario, double total);
+        void InsertarDetallePedido(int idjuego, double total, int cantidad, int idpedido);
     }
 }
