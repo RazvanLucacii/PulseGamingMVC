@@ -83,25 +83,19 @@ namespace PulseGamingMVC.Controllers
             {
                 if (idfavorito != null)
                 {
-                    //COMO ALMACENAMOS EN CLIENTE CACHE, VAMOS A UTILIZAR
-                    //LA COLECCION DE EMPLEADOS DIRECTAMENTE
                     List<Juego> juegosFavoritos;
                     if (this.memoryCache.Get("FAVORITOS") == null)
                     {
-                        //CREAMOS NUESTRA COLECCION
                         juegosFavoritos = new List<Juego>();
                     }
                     else
                     {
-                        //RECUPERAMOS LOS EMPLEADOS QUE YA TENGAMOS EN CACHE
                         juegosFavoritos =
                             this.memoryCache.Get<List<Juego>>("FAVORITOS");
                     }
-                    //BUSCAMOS AL EMPLEADO POR SU ID DE FAVORITO
                     Juego juego =
                         this.repo.FindJuego(idfavorito.Value);
                     juegosFavoritos.Add(juego);
-                    //ALMACENAMOS LOS NUEVOS DATOS DENTRO DE CACHE
                     this.memoryCache.Set("FAVORITOS", juegosFavoritos);
                 }
                 List<Juego> juegos = await this.repo.GetGrupoJuegosAsync(posicion.Value);
@@ -139,7 +133,6 @@ namespace PulseGamingMVC.Controllers
                     {
                         var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-                        // Verificar si el juego ya está en el carrito
                         var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
                         if (existingItem != null)
                         {
@@ -182,7 +175,6 @@ namespace PulseGamingMVC.Controllers
                     {
                         var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-                        // Verificar si el juego ya está en el carrito
                         var existingItem = carrito.FirstOrDefault(item => item.IdJuego == idJuego.Value);
                         if (existingItem != null)
                         {
@@ -231,13 +223,10 @@ namespace PulseGamingMVC.Controllers
 
         public IActionResult FinalizarPedido(string ciudad, string pais)
         {
-            // Obtener el carrito de la sesión
             var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
 
-            // Calcular el total del pedido
             double total = carrito.Sum(item => item.PrecioJuego * item.Cantidad);
 
-            // Crear el pedido
             Pedido pedido = new Pedido
             {
                 FechaPedido = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
