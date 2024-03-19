@@ -52,10 +52,10 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
+        public async Task<IActionResult> CreateUsuario(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
         {
-            this.repoUsu.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
-            return View();
+            await this.repoUsu.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
+            return RedirectToAction("UsuariosView", "Admin");
         }
 
         public IActionResult ModificarUsuario(int idUsuario)
