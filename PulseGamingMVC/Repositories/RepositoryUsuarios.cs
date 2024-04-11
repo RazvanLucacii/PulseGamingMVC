@@ -25,7 +25,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PulseGamingMVC.Repositories
 {
-    public class RepositoryUsuarios
+    public class RepositoryUsuarios : IRepositoryUsuarios
     {
         private PulseGamingContext context;
 
@@ -34,7 +34,7 @@ namespace PulseGamingMVC.Repositories
             this.context = context;
         }
 
-        private async Task<int> GetMaxIdUsuarioAsync()
+        public async Task<int> GetMaxIdUsuarioAsync()
         {
             if (this.context.Usuarios.Count() == 0)
             {
@@ -137,6 +137,6 @@ namespace PulseGamingMVC.Repositories
             Usuario usuario = this.FindUsuarioById(idUsuario);
             this.context.Usuarios.Remove(usuario);
             this.context.SaveChanges();
-        }
+        }        
     }
 }

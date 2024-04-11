@@ -11,9 +11,9 @@ namespace PulseGamingMVC.Controllers
 {
     public class UsuariosController : Controller
     {
-        private RepositoryUsuarios repo;
+        private IRepositoryUsuarios repo;
 
-        public UsuariosController(RepositoryUsuarios repo)
+        public UsuariosController(IRepositoryUsuarios repo)
         {
             this.repo = repo;
         }

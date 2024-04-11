@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
-string connectionString = builder.Configuration.GetConnectionString("SqlPulseGaming");
-builder.Services.AddTransient<RepositoryUsuarios>();
+string connectionString = builder.Configuration.GetConnectionString("SqlPulseGaming")!;
+builder.Services.AddTransient<IRepositoryUsuarios, RepositoryUsuarios>();
 builder.Services.AddTransient<IRepositoryJuegos, RepositoryJuegosSqlServer>();
 builder.Services.AddDbContext<PulseGamingContext>(options => options.UseSqlServer(connectionString));
 
