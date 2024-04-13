@@ -23,11 +23,11 @@ namespace PulseGamingMVC.Controllers
     public class AdminController : Controller
     {
         private IRepositoryJuegos repoGame;
-        private RepositoryUsuarios repoUsu;
+        private IRepositoryUsuarios repoUsu;
 
         private ListasCrearJuego listasCrearJuego = new ListasCrearJuego();
 
-        public AdminController(IRepositoryJuegos repoGame, RepositoryUsuarios repoUsu)
+        public AdminController(IRepositoryJuegos repoGame, IRepositoryUsuarios repoUsu)
         {
             this.repoGame = repoGame;
             this.repoUsu = repoUsu;
