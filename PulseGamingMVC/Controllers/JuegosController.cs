@@ -116,182 +116,112 @@ namespace PulseGamingMVC.Controllers
             return View(juegosCategorias);
         }
 
-        [HttpPost]
-        public IActionResult AñadirCarrito(int? IdJuego)
+        public async Task<IActionResult> Carrito()
         {
-            var user = HttpContext.Session.GetString("USUARIO");
-            if (user == null)
+            List<int> carrito = HttpContext.Session.GetObject<List<int>>("CARRITO");
+            if (carrito != null)
             {
-                return RedirectToAction("Login", "Usuarios");
+                List<Juego> juegos = await this.repo.GetJuegosSessionAsync(carrito);
+                return View(juegos);
             }
-            else
+            return View();
+        }
+
+        public IActionResult AñadirCarrito(int? idJuego)
+        {
+            if (idJuego != null)
             {
-                if (IdJuego != null)
+                List<int> carrito;
+                if (HttpContext.Session.GetString("CARRITO") == null)
                 {
-                    var juego = this.repo.FindJuego(IdJuego.Value);
-                    if (juego != null)
-                    {
-                        var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-
-                        var existingItem = carrito.FirstOrDefault(item => item.IdJuego == IdJuego.Value);
-                        if (existingItem != null)
-                        {
-                            existingItem.Cantidad++;
-                        }
-                        else
-                        {
-                            carrito.Add(new Carrito
-                            {
-                                IdJuego = juego.IdJuego,
-                                NombreJuego = juego.NombreJuego,
-                                PrecioJuego = juego.PrecioJuego,
-                                Cantidad = 1
-                            });
-
-                        }
-
-                        HttpContext.Session.SetObject("CARRITO", carrito);
-                    }
-
+                    carrito = new List<int>();
                 }
+                else
+                {
+                    carrito = HttpContext.Session.GetObject<List<int>>("CARRITO");
+                }
+                carrito.Add(idJuego.Value);
+                HttpContext.Session.SetObject("CARRITO", carrito);
             }
-            return RedirectToAction("Carrito");
+            return RedirectToAction("Games");
         }
 
         [HttpPost]
         public IActionResult AñadirAlCarritoDesdeLista(int? idJuego)
         {
-            var user = HttpContext.Session.GetString("USUARIO");
-            if(user == null)
+
+            if (idJuego != null)
             {
-                return RedirectToAction("Login", "Usuarios");
-            }
-            else
-            {
-                if (idJuego != null)
+                List<int> carrito;
+                if (HttpContext.Session.GetString("CARRITO") == null)
                 {
-                    var juego = repo.FindJuego(idJuego.Value);
-                    if (juego != null)
-                    {
-                        var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-
-                        var existingItem = carrito.FirstOrDefault(item => item.IdJuego == idJuego.Value);
-                        if (existingItem != null)
-                        {
-                            existingItem.Cantidad++;
-                        }
-                        else
-                        {
-                            carrito.Add(new Carrito
-                            {
-                                IdJuego = juego.IdJuego,
-                                NombreJuego = juego.NombreJuego,
-                                PrecioJuego = juego.PrecioJuego,
-                                Cantidad = 1
-                            });
-
-                        }
-
-                        HttpContext.Session.SetObject("CARRITO", carrito);
-                    }
+                    carrito = new List<int>();
                 }
+                else
+                {
+                    carrito = HttpContext.Session.GetObject<List<int>>("CARRITO");
+                }
+                carrito.Add(idJuego.Value);
+                HttpContext.Session.SetObject("CARRITO", carrito);
             }
 
             return RedirectToAction("Carrito");
         }
 
-        public IActionResult Carrito()
+        public async Task<IActionResult> EliminarJuegoCesta(int? idJuego)
         {
-            var user = HttpContext.Session.GetString("USUARIO");
-            if (user == null)
+            if (idJuego != null)
             {
-                return RedirectToAction("Login", "Usuarios");
+                List<int> carrito =
+                    HttpContext.Session.GetObject<List<int>>("CARRITO");
+                carrito.Remove(idJuego.Value);
+                if (carrito.Count() == 0)
+                {
+                    HttpContext.Session.Remove("CARRITO");
+                }
+                else
+                {
+                    HttpContext.Session.SetObject("CARRITO", carrito);
+                }
             }
-            else
-            { 
-                var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-                return View(carrito);
-            }
-
+            return RedirectToAction("Carrito");
         }
 
-        public IActionResult Pedidos()
+        private int ObtenerIdUsuario()
         {
-            var pedido = HttpContext.Session.GetObject<Pedido>("PEDIDO");
-            return View(pedido);
+            // Verificamos si el usuario está presente en la sesión
+            Usuario usuario = HttpContext.Session.GetObject<Usuario>("USUARIO");
+
+            // Si el usuario está presente en la sesión, devolvemos su ID
+            // Si no está presente o es nulo, devolvemos algún valor predeterminado o manejamos la situación según sea necesario
+            return usuario != null ? usuario.IdUsuario : 0;
         }
 
-        public IActionResult FinalizarPedido(string ciudad, string pais)
+        public async Task<IActionResult> RealizarCompra()
         {
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
+            int idUsuario = ObtenerIdUsuario();
 
-            double total = carrito.Sum(item => item.PrecioJuego * item.Cantidad);
+            // Obtenemos la lista de productos en la cesta desde la sesión
+            List<int> cesta = HttpContext.Session.GetObject<List<int>>("CARRITO");
 
-            Pedido pedido = new Pedido
-            {
-                FechaPedido = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-                Ciudad = ciudad,
-                Pais = pais, 
-                IDUsuario = 1, 
-                Total = total,
-                TotalProducto = string.Join(",", carrito.Select(item => $"{item.NombreJuego} ({item.Cantidad})"))
-            };
+            // Obtenemos los detalles de los productos en la cesta desde la base de datos
+            List<Juego> productosEnCarrito = await this.repo.GetProductosEnCarritoAsync(cesta);
 
-            HttpContext.Session.SetObject("PEDIDO", pedido);
+            // Creamos el pedido
+            await this.repo.CreatePedidoAsync(idUsuario, productosEnCarrito);
 
+            // Limpiamos la cesta después de crear el pedido
             HttpContext.Session.Remove("CARRITO");
 
-            return View(pedido);
+            // Redirigimos a alguna página de confirmación o cualquier otra acción que necesites
+            return RedirectToAction("Games");
         }
 
-        [HttpPost]
-        public IActionResult IncrementarCantidad(int idJuego)
+        public async Task<IActionResult> PedidosUsuario()
         {
-
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
- 
-            var juegoEnCarrito = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
-
-            if (juegoEnCarrito != null)
-            {
-                juegoEnCarrito.Cantidad++;
-            }
-
-            HttpContext.Session.SetObject("CARRITO", carrito);
-
-            return PartialView("_Carrito", carrito);
-        }
-
-        [HttpPost]
-        public IActionResult DecrementarCantidad(int idJuego)
-        {
-
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-
-            var juegoEnCarrito = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
-
-            if (juegoEnCarrito != null)
-            {
-                juegoEnCarrito.Cantidad--;
-            }
-
-            HttpContext.Session.SetObject("CARRITO", carrito);
-
-            return PartialView("_Carrito", carrito);
-        }
-
-        public IActionResult EliminarJuego(int idJuego)
-        {
-            var carrito = HttpContext.Session.GetObject<List<Carrito>>("CARRITO") ?? new List<Carrito>();
-
-            var juegoAEliminar = carrito.FirstOrDefault(item => item.IdJuego == idJuego);
-            if (juegoAEliminar != null)
-            {
-                carrito.Remove(juegoAEliminar);
-                HttpContext.Session.SetObject("CARRITO", carrito);
-            }
-
-            return PartialView("_Carrito", carrito);
+            int idUsuario = ObtenerIdUsuario();
+            List<DetallePedidoView> pedidosUsuarios = await this.repo.GetProductosPedidoUsuarioAsync(idUsuario);
+            return View(pedidosUsuarios);
         }
     }
 }

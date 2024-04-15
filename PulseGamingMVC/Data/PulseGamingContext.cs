@@ -14,5 +14,11 @@ namespace PulseGamingMVC.Data
         public DbSet<Genero> Generos { get; set; }
 
         public DbSet<Editor> Editores { get; set; }
+
+        public DbSet<Pedido> Pedidos { get; set; }
+
+        public DbSet<DetallesPedido> DetallePedidos { get; set; }
+
+        public DbSet<DetallePedidoView> DetallePedidoViews { get; set; }
     }
 }

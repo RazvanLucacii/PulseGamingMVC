@@ -108,6 +108,24 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 //	where posicion >= @posicion and posicion < (@posicion + 4)
 //go
 
+//create VIEW V_DETALLES_PEDIDO AS
+//SELECT 
+//    dp.IDDetallePedido,
+//    dp.IDPedido,
+//    dp.IDJuego,
+//    dp.Cantidad,
+//    dp.PrecioUnitario,
+//    j.NombreJuego AS NOMBRE_JUEGO,
+//    dp.Cantidad * dp.PrecioUnitario AS TOTAL_DETALLE,
+//    ped.Total AS TOTAL_PEDIDO,
+//    ped.IDUsuario
+//FROM 
+//    DetallesPedido dp
+//JOIN 
+//    Juego j ON dp.IDJuego = j.IDJuego
+//JOIN 
+//    Pedidos ped ON dp.IDPedido = ped.IDPedido;
+
 #endregion
 
 namespace PulseGamingMVC.Repositories
@@ -155,7 +173,7 @@ namespace PulseGamingMVC.Repositories
             return juego;
         }
 
-        public void RegistrarJuego(string nombre, int idGenero, string imagen, double precio, string descripcion, int idEditor)
+        public void RegistrarJuego(string nombre, int idGenero, string imagen, decimal precio, string descripcion, int idEditor)
         {
             string sql = "SP_INSERT_JUEGO @NombreJuego, @IDGenero, @Imagen, @Precio, @Descripcion, @IDEditor";
             SqlParameter pamNombre = new SqlParameter("NombreJuego", nombre);
@@ -168,7 +186,7 @@ namespace PulseGamingMVC.Repositories
 
         }
 
-        public void ModificarJuego(int idJuego, string nombre, int idGenero, string imagen, double precio, string descripcion, int idEditor)
+        public void ModificarJuego(int idJuego, string nombre, int idGenero, string imagen, decimal precio, string descripcion, int idEditor)
         {
             string sql = "SP_MODIFICAR_JUEGO @IDJuego, @NombreJuego, @IDGenero, @ImagenJuego, @PrecioJuego, @Descripcion, @IDEditor";
             SqlParameter pamIdJuego = new SqlParameter("IDJuego", idJuego);
@@ -266,24 +284,95 @@ namespace PulseGamingMVC.Repositories
             return await this.context.Juegos.CountAsync();
         }
 
-        public void InsertarPedido(DateTime fecha, string ciudad, string pais, int idusuario, double total)
+        public async Task<List<Juego>> GetJuegosSessionAsync(List<int> juegos)
         {
-            string sql = "SP_INSERT_PEDIDO @FechaPedido, @Ciudad, @Pais, @IDUsuario, @Total";
-            SqlParameter pamFecha = new SqlParameter("FechaPedido", fecha);
-            SqlParameter pamCiudad = new SqlParameter("Ciudad", ciudad);
-            SqlParameter pamPais = new SqlParameter("Pais", pais);
-            SqlParameter pamIdUsu = new SqlParameter("IDUsuario", idusuario);
-            SqlParameter pamTotal = new SqlParameter("Total", total);
-            this.context.Database.ExecuteSqlRaw(sql, pamFecha, pamCiudad, pamPais, pamIdUsu, pamTotal);
+            return await this.context.Juegos
+                .Where(c => juegos.Contains(c.IdJuego))
+                .ToListAsync();
         }
-        public void InsertarDetallePedido(int idjuego, double total, int cantidad, int idpedido)
+
+        public async Task<int> GetMaxIdPedidoAsync()
         {
-            string sql = "SP_INSERT_DETALLE_PEDIDO @IDJuego, @Total, @Cantidad, @IDPedido";
-            SqlParameter pamidjuego = new SqlParameter("IDJuego", idjuego);
-            SqlParameter pamtotal = new SqlParameter("Total", total);
-            SqlParameter pamcantidad = new SqlParameter("Cantidad", cantidad);
-            SqlParameter pamidpedido = new SqlParameter("IDPedido", idpedido);
-            this.context.Database.ExecuteSqlRaw(sql, pamidjuego, pamtotal, pamcantidad, pamidpedido);
+            if (this.context.Pedidos.Count() == 0) return 1;
+            return await this.context.Pedidos.MaxAsync(x => x.IDPedido) + 1;
         }
+
+        public async Task<int> GetMaxIdDetallePedidoAsync()
+        {
+            if (this.context.DetallePedidos.Count() == 0) return 1;
+            return await this.context.DetallePedidos.MaxAsync(x => x.IDDetallePedido) + 1;
+        }
+
+        public async Task<List<Juego>> GetProductosEnCarritoAsync(List<int> idsJuegos)
+        {
+            List<Juego> productosEnCarrito = await context.Juegos
+                                                        .Where(p => idsJuegos.Contains(p.IdJuego))
+                                                        .ToListAsync();
+            return productosEnCarrito;
+        }
+
+        public async Task<Pedido> CreatePedidoAsync(int idusuario, List<Juego> carrito)
+        {
+            var total = 0.0m;
+            foreach (Juego juego in carrito)
+            {
+                total = juego.PrecioJuego + total;
+            }
+            Pedido pedido = new Pedido
+            {
+                IDPedido = await GetMaxIdPedidoAsync(),
+                IDUsuario = idusuario,
+                FechaPedido = DateTime.Now,
+                Total = total
+            };
+            await this.context.Pedidos.AddAsync(pedido);
+            await this.context.SaveChangesAsync();
+
+            foreach (Juego p in carrito)
+            {
+                DetallesPedido detalle = new DetallesPedido
+                {
+                    IDDetallePedido = await GetMaxIdDetallePedidoAsync(),
+                    IDPedido = pedido.IDPedido,
+                    IDJuego = p.IdJuego,
+                    Cantidad = 1,
+                    PrecioUnitario = p.PrecioJuego
+                };
+
+                // Verificar si ya existe un DetallePedido con el mismo IdDetallePedido
+                DetallesPedido existingDetalle = await this.context.DetallePedidos.FindAsync(detalle.IDDetallePedido);
+                if (existingDetalle != null)
+                {
+                    // Actualizar el DetallePedido existente si es necesario
+                    existingDetalle.IDPedido = detalle.IDPedido;
+                    existingDetalle.IDJuego = detalle.IDJuego;
+                    existingDetalle.Cantidad = detalle.Cantidad;
+                    existingDetalle.PrecioUnitario = detalle.PrecioUnitario;
+                }
+                else
+                {
+                    // Agregar el nuevo DetallePedido al contexto si no existe
+                    await this.context.AddAsync(detalle);
+                    await this.context.SaveChangesAsync();
+
+                }
+            }
+
+            await this.context.SaveChangesAsync();
+            return pedido;
+        }
+
+        public async Task<List<DetallePedidoView>> GetProductosPedidoAsync(List<int> idpedidos)
+        {
+            return await this.context.DetallePedidoViews.Where(x => idpedidos.Contains(x.IdPedido)).ToListAsync();
+        }
+
+        public async Task<List<DetallePedidoView>> GetProductosPedidoUsuarioAsync(int idUsuario)
+        {
+            return await context.DetallePedidoViews
+                .Where(d => d.IdUsuario == idUsuario)
+                .ToListAsync();
+        }
+
     }
 }

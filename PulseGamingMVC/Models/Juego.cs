@@ -16,7 +16,7 @@ namespace PulseGamingMVC.Models
         [Column("ImagenJuego")]
         public string? ImagenJuego { get; set; }
         [Column("PrecioJuego")]
-        public double PrecioJuego { get; set; }
+        public decimal PrecioJuego { get; set; }
         [Column("DescripcionJuego")]
         public string? Descripcion { get; set; }
         [Column("IDEditor")]
