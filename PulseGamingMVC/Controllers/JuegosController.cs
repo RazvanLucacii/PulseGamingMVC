@@ -61,6 +61,7 @@ namespace PulseGamingMVC.Controllers
         {
 
             ViewData["PRECIO"] = precio;
+
             if (posicion == null)
             {
                 posicion = 1;
