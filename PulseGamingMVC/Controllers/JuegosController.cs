@@ -162,7 +162,7 @@ namespace PulseGamingMVC.Controllers
                     carrito = HttpContext.Session.GetObject<List<int>>("CARRITO");
                 }
                 carrito.Add(idJuego.Value);
-                HttpContext.Session.SetObject("CARRITO", carrito);
+                HttpContext.Session.SetObject("CARRITO", carrito); 
             }
 
             return RedirectToAction("Carrito");
