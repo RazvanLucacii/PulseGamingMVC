@@ -8,6 +8,7 @@ namespace PulseGamingMVC.Repositories
         List<Juego> GetJuegosPrecioAsce();
         List<Juego> GetJuegosPrecioDesc();
         List<Juego> GetJuegosGeneros(int idgenero);
+        List<Juego> GetJuegosGenerosDesc(int idgenero);
         Juego FindJuego(int IdJuego);
         void RegistrarJuego(string nombre, int idGenero, string imagen, decimal precio, string descripcion, int idEditor);
         Task<List<Editor>> GetEditoresAsync();

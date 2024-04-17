@@ -155,6 +155,11 @@ namespace PulseGamingMVC.Repositories
             return this.context.Juegos.OrderByDescending(z => z.PrecioJuego).ToList();
         }
 
+        public List<Juego> GetJuegosGenerosDesc(int idgenero)
+        {
+            return this.context.Juegos.Where(z => z.IDGenero == idgenero).OrderByDescending(x => x.PrecioJuego).ToList();
+        }
+
         public List<Juego> GetJuegosGeneros(int idgenero)
         {
             string sql = "SP_FILTRAR_JUEGOS_CATEGORIAS @idgenero";
