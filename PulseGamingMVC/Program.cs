@@ -5,12 +5,15 @@ using MvcCoreAzureStorage.Services;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Repositories;
 using Microsoft.Extensions.Azure;
+using PulseGamingMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+
+builder.Services.AddTransient<ServicePulseGaming>();
 
 builder.Services.AddTransient<ServiceStorageBlobs>();
 string azureKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount")!;
