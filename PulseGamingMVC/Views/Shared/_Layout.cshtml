@@ -1,6 +1,5 @@
 ﻿@{
-    string? user = Context.Session.GetString("USUARIO");
-    List<Carrito> juegosCarrito = Context.Session.GetObject<List<Carrito>>("CARRITO");
+    Usuario user = Context.Session.GetObject<Usuario>("USUARIO");
     List<Juego> favoritos = memoryCache.Get<List<Juego>>("FAVORITOS");
 }
 
@@ -55,14 +54,7 @@
                             }
                         </li>
                         <li class="nav-item">
-                            @if (juegosCarrito != null)
-                            {
-                                <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito @juegosCarrito.Count</a>
-                            }
-                            else
-                            {
-                                <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito 0</a>
-                            }
+                            <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito</a>    
                         </li>
                     </ul>
                     <ul class="navbar-nav float-end">
@@ -73,15 +65,19 @@
                             <ul class="dropdown-menu">
                                 @if (user is not null)
                                 {
-                                    int userRole = (int)Context.Session.GetInt32("UserRole");
+                                    int? userRole = Context.Session.GetInt32("UserRole");
                                     if (userRole == 1) // Si el rol del usuario es administrador
                                     {
                                         <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
-                                        <li><a class="dropdown-item" asp-action="Pedidos" asp-controller="Juegos">Mis Pedidos</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-dark" asp-controller="Juegos" asp-action="PedidosUsuario">Mis pedidos</a>
+                                        </li>
                                     }
                                     else
                                     {
-                                        <li><a class="dropdown-item" asp-action="Pedidos" asp-controller="Juegos">Mis Pedidos</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-dark" asp-controller="Juegos" asp-action="PedidosUsuario">Mis pedidos</a>
+                                        </li>
                                     }
                                     <li><a class="dropdown-item" asp-action="Logout" asp-controller="Usuarios">Log Out</a></li>
                                 }

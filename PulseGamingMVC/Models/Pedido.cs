@@ -9,19 +9,14 @@ namespace PulseGamingMVC.Models
         [Key]
         [Column("IDPedido")]
         public int IDPedido { get; set; }
+
         [Column("FechaPedido")]
-        public string FechaPedido { get; set; }
-        [Column("Ciudad")]
-        public string Ciudad { get; set; }
-        [Column("Pais")]
-        public string Pais { get; set; }
+        public DateTime FechaPedido { get; set; }
+
         [Column("IDUsuario")]
         public int IDUsuario { get; set; }
-        [Column("Total")]
-        public double Total { get; set; }
-        [Column("TotalProducto")]
-        public string TotalProducto { get; set; }
 
-        public List<DetallesPedido> IDDetallePedido { get; set; }
+        [Column("Total")]
+        public decimal Total { get; set; }
     }
 }

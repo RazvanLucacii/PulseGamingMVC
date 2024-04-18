@@ -8,12 +8,13 @@ namespace PulseGamingMVC.Repositories
         List<Juego> GetJuegosPrecioAsce();
         List<Juego> GetJuegosPrecioDesc();
         List<Juego> GetJuegosGeneros(int idgenero);
+        List<Juego> GetJuegosGenerosDesc(int idgenero);
         Juego FindJuego(int IdJuego);
-        void RegistrarJuego(string nombre, int idGenero, string imagen, double precio, string descripcion, int idEditor);
+        void RegistrarJuego(string nombre, int idGenero, string imagen, decimal precio, string descripcion, int idEditor);
         Task<List<Editor>> GetEditoresAsync();
         Task<List<Genero>> GetGenerosAsync();
         void DeleteJuego(int idjuego);
-        void ModificarJuego(int idJuego, string nombre, int idGenero, string imagen, double precio, string descripcion, int idEditor);
+        void ModificarJuego(int idJuego, string nombre, int idGenero, string imagen, decimal precio, string descripcion, int idEditor);
         void CrearEditor(string nombre);
         void CrearGenero(string nombre);
         void ModificarEditor(int idEditor, string nombre);
@@ -23,8 +24,13 @@ namespace PulseGamingMVC.Repositories
         Task<Editor> FindEditorAsync(int idEditor);
         Task<Genero> FindGeneroAsync(int idGenero);
         Task<int> GetNumeroJuegosAsync();
+        Task<List<Juego>> GetJuegosSessionAsync(List<int> juegos);
+        Task<int> GetMaxIdPedidoAsync();
+        Task<int> GetMaxIdDetallePedidoAsync();
+        Task<List<Juego>> GetProductosEnCarritoAsync(List<int> idsJuegos);
         Task<List<Juego>> GetGrupoJuegosAsync(int posicion);
-        void InsertarPedido(DateTime fecha, string ciudad, string pais, int idusuario, double total);
-        void InsertarDetallePedido(int idjuego, double total, int cantidad, int idpedido);
+        Task<Pedido> CreatePedidoAsync(int idusuario, List<Juego> carrito);
+        Task<List<DetallePedidoView>> GetProductosPedidoAsync(List<int> idpedidos);
+        Task<List<DetallePedidoView>> GetProductosPedidoUsuarioAsync(int idUsuario);
     }
 }

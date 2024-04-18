@@ -47,17 +47,17 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
-                HttpContext.Session.SetInt32("UserRole", user.IDRole);
+                HttpContext.Session.SetObject("UserRole", user.IDRole);
 
                 // Redireccionar según el rol del usuario
                 if (user.IDRole == 1) // Suponiendo que el ID 1 corresponde al rol de administrador
                 {
-                    HttpContext.Session.SetString("USUARIO", user.ToString());
+                    HttpContext.Session.SetObject("USUARIO", user);
                     return RedirectToAction("Dashboard", "Admin");
                 }
                 else
                 {
-                    HttpContext.Session.SetString("USUARIO", user.ToString());
+                    HttpContext.Session.SetObject("USUARIO", user);
                     return RedirectToAction("Inicio", "Juegos");
                 }
             }

@@ -1,4 +1,4 @@
-﻿@model List<Carrito>
+﻿@model List<Juego>
 
 @{
     var user = Context.Session.GetString("USUARIO");
@@ -6,98 +6,45 @@
 
 <h2>Carrito de Compras</h2>
 
-@if (Model.Count == 0)
-{
-    <h3>No hay ningún artículo en tu carrito.</h3>
-}
-else
-{
-    <div id="carrito">
-        <partial name="_Carrito"/>
-    </div>
-    <p>
-        @if (user == null)
-        {
-            <script>
-                window.location.href = '/Usuarios/Login';
-            </script>
-        }
-        <a asp-action="FinalizarPedido" , asp-controller="Juegos" class="btn btn-dark" onclick="mostrarVentanaEmergente()">
-            Finalizar Compra
+@if (Model == null)
+    {
+        <h2 class="text-danger" style="text-align: center;">No hay productos en tu carrito</h2>
+    }
+    else
+    {
+        <div style="display: flex; align-items: center; justify-content: space-between;margin: 1px 20px 1px 20px;">
+            <h3 class="text-primary mt-3">Productos en carrito: @Model.Count()</h3>
+            <h3 class="text-success mt-2">Precio total: @Model.Sum(c => c.PrecioJuego)€</h3>
+        </div>
+
+        <div class="container mt-5">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-1 g-2">
+                @foreach (Juego juego in Model)
+                {
+                    <div class="col">
+                        <div class="card shadow-sm" style="border-radius: 35px; margin-bottom:1rem;">
+                            <div class="d-flex justify-content-between align-items-center card-body">
+                                <img src="~/images/@juego.ImagenJuego" style="width: 9%;margin-left: 30px;">
+                                <div>
+                                <h4 class="card-title" style="font-weight: bold;">@juego.NombreJuego</h4>
+                                </div>
+                                <div class="ml-auto">
+                                <p style="font-weight: bold;">@juego.PrecioJuego €</p>
+                                </div>
+                                <div style="margin-right: 25px">
+                                    <a asp-controller="Juegos" asp-action="EliminarJuegoCesta" asp-route-idJuego="@juego.IdJuego" class="btn btn-danger">
+                                        <span class="material-symbols-outlined">Eliminar</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <a asp-controller="Juegos" asp-action="RealizarCompra"
+           class="btn btn-success w-100 mt-3">
+            Realizar compra
         </a>
-    </p>
-}
-
-@section Scripts{
-    <script>
-        function incrementarCantidad(idJuego) {
-            $.ajax({
-                url: '/Juegos/IncrementarCantidad',
-                method: 'POST',
-                data: { idJuego: idJuego },
-                success: function (response) {
-                    $('#carrito').html(response);
-                }
-            });
-        }
-    </script>
-    <script>
-        function decrementarCantidad(idJuego) {
-            $.ajax({
-                url: '/Juegos/DecrementarCantidad',
-                method: 'POST',
-                data: { idJuego: idJuego },
-                success: function (response) {
-                    $('#carrito').html(response);
-                }
-            });
-        }
-    </script>
-    <script>
-        function eliminarJuego(idJuego) {
-            $.ajax({
-                url: '/Juegos/EliminarJuego',
-                method: 'POST',
-                data: { idJuego: idJuego },
-                success: function (response) {
-                    $('#carrito').html(response);
-                }
-            });
-        }
-    </script>
-    <script>
-        function mostrarVentanaEmergente() {
-            event.preventDefault();
-            Swal.fire({
-                title: 'Finalizar Compra',
-                html: '<label for="ciudad">Ciudad:</label><input type="text" id="ciudad" name="ciudad" class="swal2-input" required><br><label for="pais">País:</label><input type="text" id="pais" name="pais" class="swal2-input" required>',
-                showCancelButton: true,
-                confirmButtonText: 'Finalizar Pedido',
-                cancelButtonText: 'Cancelar',
-                showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    let ciudad = document.getElementById('ciudad').value;
-                    let pais = document.getElementById('pais').value;
-
-                    $.ajax({
-                        url: '/Juegos/FinalizarPedido',
-                        method: 'POST',
-                        data: { ciudad: ciudad, pais: pais },
-                        success: function (response) {
-                            Swal.fire('¡Pedido completado!', response.message, 'success');
-                        },
-                        error: function (xhr, status, error) {
-                            // Manejar errores si es necesario
-                            Swal.fire('Error', 'Hubo un problema al procesar el pedido.', 'error');
-                        }
-                    });
-                }
-            });
-        }
-    </script>
-    <script>
-        function redirectToLogin() {
-            window.location.href = '/Usuarios/Login';
-        }
-    </script>
-}
+    }
