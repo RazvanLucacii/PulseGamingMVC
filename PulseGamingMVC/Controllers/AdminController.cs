@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using MvcCoreAzureStorage.Services;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
@@ -22,15 +23,17 @@ namespace PulseGamingMVC.Controllers
 {
     public class AdminController : Controller
     {
+        private ServiceStorageBlobs storageBlobs;
         private IRepositoryJuegos repoGame;
         private IRepositoryUsuarios repoUsu;
 
         private ListasCrearJuego listasCrearJuego = new ListasCrearJuego();
 
-        public AdminController(IRepositoryJuegos repoGame, IRepositoryUsuarios repoUsu)
+        public AdminController(IRepositoryJuegos repoGame, IRepositoryUsuarios repoUsu, ServiceStorageBlobs storageBlobs)
         {
             this.repoGame = repoGame;
             this.repoUsu = repoUsu;
+            this.storageBlobs = storageBlobs;
         }
 
         public IActionResult Dashboard()
@@ -100,8 +103,10 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateJuego(Juego juego)
+        public async Task<IActionResult> CreateJuego(Juego juego, IFormFile imagen)
         {
+            await this.storageBlobs.UploadBlobAsync("imgs", imagen.FileName, imagen.OpenReadStream());
+            juego.ImagenJuego = await this.storageBlobs.GetBlobUrlAsync("imgs" ,imagen.FileName);
             this.repoGame.RegistrarJuego(juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView");
         }

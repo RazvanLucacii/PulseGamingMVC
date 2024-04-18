@@ -1,7 +1,10 @@
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using MvcCoreAzureStorage.Services;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Repositories;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
+builder.Services.AddTransient<ServiceStorageBlobs>();
+string azureKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount")!;
+BlobServiceClient blobServiceClient = new BlobServiceClient(azureKeys);
+builder.Services.AddTransient<BlobServiceClient>(x => blobServiceClient);
+
 string connectionString = builder.Configuration.GetConnectionString("SqlPulseGaming")!;
 builder.Services.AddTransient<IRepositoryUsuarios, RepositoryUsuarios>();
 builder.Services.AddTransient<IRepositoryJuegos, RepositoryJuegosSqlServer>();
 builder.Services.AddDbContext<PulseGamingContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddAzureClients(clientBuilder =>
+{
+    clientBuilder.AddBlobServiceClient(builder.Configuration["StorageConnectionString:blob"]!, preferMsi: true);
+    clientBuilder.AddQueueServiceClient(builder.Configuration["StorageConnectionString:queue"]!, preferMsi: true);
+});
 
 
 
