@@ -140,9 +140,7 @@ namespace PulseGamingMVC.Repositories
         }
         public List<Juego> GetJuegos()
         {
-            string sql = "SP_TODOS_JUEGOS";
-            var consulta = this.context.Juegos.FromSqlRaw(sql);
-            return consulta.ToList();
+            return this.context.Juegos.ToList();
         }
 
         public List<Juego> GetJuegosPrecioAsce()

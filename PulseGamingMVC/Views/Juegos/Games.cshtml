@@ -7,6 +7,7 @@
     var generos = ViewData["GENEROS"] as List<Genero>;
     int numeroPagina = 1;
     List<Juego> favoritos = memoryCache.Get<List<Juego>>("FAVORITOS");
+    string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
 }
 
 <div class="container mt-5 mb-5">
@@ -26,7 +27,7 @@
         {
             <div class="col">
                 <div class="card shadow-sm m-auto">
-                    <img src="~/images/@game.ImagenJuego">
+                    <img src="@urlImages/@game.ImagenJuego">
                     <div class="card-body">
                         <h5 class="card-title">@game.NombreJuego</h5>
                         <p class="card-text">@game.PrecioJuego €</p>

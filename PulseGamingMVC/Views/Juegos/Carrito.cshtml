@@ -2,6 +2,7 @@
 
 @{
     var user = Context.Session.GetString("USUARIO");
+    string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
 }
 
 <h2>Carrito de Compras</h2>
@@ -13,38 +14,39 @@
     else
     {
         <div style="display: flex; align-items: center; justify-content: space-between;margin: 1px 20px 1px 20px;">
-            <h3 class="text-primary mt-3">Productos en carrito: @Model.Count()</h3>
-            <h3 class="text-success mt-2">Precio total: @Model.Sum(c => c.PrecioJuego)€</h3>
+            <h3 class="text-success mt-5">Productos en carrito: @Model.Count()</h3>
+            <h3 class="text-info mt-5">Precio total: @Model.Sum(c => c.PrecioJuego)€</h3>
         </div>
 
-        <div class="container mt-5">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-1 g-2">
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
                 @foreach (Juego juego in Model)
                 {
-                    <div class="col">
-                        <div class="card shadow-sm" style="border-radius: 35px; margin-bottom:1rem;">
-                            <div class="d-flex justify-content-between align-items-center card-body">
-                                <img src="~/images/@juego.ImagenJuego" style="width: 9%;margin-left: 30px;">
-                                <div>
-                                <h4 class="card-title" style="font-weight: bold;">@juego.NombreJuego</h4>
-                                </div>
-                                <div class="ml-auto">
-                                <p style="font-weight: bold;">@juego.PrecioJuego €</p>
-                                </div>
-                                <div style="margin-right: 25px">
-                                    <a asp-controller="Juegos" asp-action="EliminarJuegoCesta" asp-route-idJuego="@juego.IdJuego" class="btn btn-danger">
-                                        <span class="material-symbols-outlined">Eliminar</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <tr>
+                        <td><img src="@urlImages/@juego.ImagenJuego" style="width:200px; height:200px" /></td>
+                        <td>@juego.NombreJuego</td>
+                        <td>@juego.PrecioJuego €</td>
+                        <td>
+                            <a asp-controller="Juegos" asp-action="EliminarJuegoCesta"
+                               asp-route-idJuego="@juego.IdJuego" class="btn btn-danger">
+                                <span class="material-symbols-outlined">Eliminar</span>
+                            </a>
+                        </td>
+                    </tr>
                 }
-            </div>
-        </div>
+            </tbody>
+        </table>
 
         <a asp-controller="Juegos" asp-action="RealizarCompra"
-           class="btn btn-success w-100 mt-3">
+           class="btn btn-success mt-5 mb-5">
             Realizar compra
         </a>
     }

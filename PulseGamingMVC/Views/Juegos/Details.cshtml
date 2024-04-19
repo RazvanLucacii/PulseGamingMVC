@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
 }
 
 @if(Model != null)
@@ -15,7 +16,7 @@
         <hr />
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <img src="~/images/@Model.ImagenJuego" style="width:500px; height: 600px" />
+                <img src="@urlImages/@Model.ImagenJuego" style="width:500px; height: 600px" />
             </div>
             <div class="col-lg-6">
                 <form method="post" asp-action="AñadirCarrito" enctype="multipart/form-data">

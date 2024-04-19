@@ -65,8 +65,8 @@
                             <ul class="dropdown-menu">
                                 @if (user is not null)
                                 {
-                                    int? userRole = Context.Session.GetInt32("UserRole");
-                                    if (userRole == 1) // Si el rol del usuario es administrador
+                                    string userRole = Context.Session.GetString("UserRole");
+                                    if (userRole == "1") // Si el rol del usuario es administrador
                                     {
                                         <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">Dashboard</a></li>
                                         <li>

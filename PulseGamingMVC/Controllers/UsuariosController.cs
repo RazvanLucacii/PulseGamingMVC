@@ -47,7 +47,7 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
-                HttpContext.Session.SetObject("UserRole", user.IDRole);
+                HttpContext.Session.SetString("UserRole", user.IDRole.ToString());
 
                 // Redireccionar según el rol del usuario
                 if (user.IDRole == 1) // Suponiendo que el ID 1 corresponde al rol de administrador

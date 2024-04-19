@@ -1,11 +1,15 @@
 ﻿@model List<Juego>
 
+@{
+    string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
+}
+
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-5">
     @foreach (Juego game in Model)
     {
         <div class="col">
             <div class="card shadow-sm m-auto">
-                <img src="~/images/@game.ImagenJuego">
+                <img src="@urlImages/@game.ImagenJuego">
                 <div class="card-body">
                     <h5 class="card-title">@game.NombreJuego</h5>
                     <p class="card-text">@game.PrecioJuego €</p>
