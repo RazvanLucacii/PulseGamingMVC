@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PulseGamingMVC.Models;
 using System.Net.Http.Headers;
 using System.Text;
@@ -9,12 +10,47 @@ namespace PulseGamingMVC.Services
     {
         private string UrlApi;
         private MediaTypeWithQualityHeaderValue header;
+        private IHttpContextAccessor httpContextAccessor;
 
 
-        public ServicePulseGaming(IConfiguration configuration)
+        public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
+            this.httpContextAccessor = httpContextAccessor;
             this.header = new MediaTypeWithQualityHeaderValue("application/json");
             this.UrlApi = configuration.GetValue<string>("ApiUrls:ApiJuegos");
+        }
+
+        public async Task<string> GetTokenAsync(string email, string password)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/auth/login";
+                client.BaseAddress = new Uri(this.UrlApi);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.header);
+                LoginModel model = new LoginModel
+                {
+                    Email = email,
+                    Password = password
+                };
+                string jsonData = JsonConvert.SerializeObject(model);
+                StringContent content =
+                    new StringContent(jsonData, Encoding.UTF8,
+                    "application/json");
+                HttpResponseMessage response = await
+                    client.PostAsync(request, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    string data = await response.Content.ReadAsStringAsync();
+                    JObject keys = JObject.Parse(data);
+                    string token = keys.GetValue("response").ToString();
+                    return token;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         private async Task<T> CallApiAsync<T>(string request)
@@ -24,6 +60,30 @@ namespace PulseGamingMVC.Services
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                HttpResponseMessage response =
+                    await client.GetAsync(request);
+                if (response.IsSuccessStatusCode)
+                {
+                    T data = await response.Content.ReadAsAsync<T>();
+                    return data;
+                }
+                else
+                {
+                    return default(T);
+                }
+            }
+        }
+
+        private async Task<T> CallApiAsync<T>
+            (string request, string token)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(this.UrlApi);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add
+                    ("Authorization", "bearer " + token);
                 HttpResponseMessage response =
                     await client.GetAsync(request);
                 if (response.IsSuccessStatusCode)
@@ -52,14 +112,24 @@ namespace PulseGamingMVC.Services
             return data;
         }
 
+        public async Task<Usuario> GetPerfilUsuarioAsync()
+        {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(x => x.Type == "TOKEN").Value;
+            string request = "api/usuarios/perfilusuario";
+            Usuario usuario = await this.CallApiAsync<Usuario>(request, token);
+            return usuario;
+        }
+
         public async Task InsertJuegoAsync(int id, string nombre, int idgenero, string imagen, decimal precio, string descripcion, int ideditor)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/insertjuego";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Juego juego = new Juego();
                 juego.IdJuego = id;
                 juego.NombreJuego = nombre;
@@ -76,12 +146,14 @@ namespace PulseGamingMVC.Services
 
         public async Task UpdateJuegoAsync(int id, string nombre, int idgenero, string imagen, decimal precio, string descripcion, int ideditor)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/updatejuego";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Juego juego = new Juego();
                 juego.IdJuego = id;
                 juego.NombreJuego = nombre;
@@ -98,11 +170,13 @@ namespace PulseGamingMVC.Services
 
         public async Task DeleteJuegoAsync(int idJuego)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/deletejuego/" + idJuego;
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 HttpResponseMessage response = await client.DeleteAsync(request);
 
             }

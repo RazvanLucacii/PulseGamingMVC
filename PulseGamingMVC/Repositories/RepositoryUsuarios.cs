@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -47,46 +48,23 @@ namespace PulseGamingMVC.Repositories
             }
         }
 
-        public async Task RegisterUser(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
+        public async Task RegistrarUsuario(string password, string nombre, string apellidos, string email, int telefono, int IDRole)
         {
             Usuario user = new Usuario();
             user.IdUsuario = await this.GetMaxIdUsuarioAsync();
+            user.Password = password;
             user.Apellidos = apellidos;
             user.Nombre = nombre;
             user.Email = email;
             user.Telefono = telefono;
             user.IDRole = IDRole;
-            user.Salt = HelperJuegos.GenerateSalt();
-            user.Password =
-                HelperJuegos.EncryptPassword(password, user.Salt);
             this.context.Usuarios.Add(user);
             await this.context.SaveChangesAsync();
         }
 
         public async Task<Usuario> LogInUserAsync(string email, string password)
         {
-            Usuario user = await this.context.Usuarios.FirstOrDefaultAsync(x => x.Email == email);
-            if (user == null)
-            {
-                return null;
-            }
-            else
-            {
-                string salt = user.Salt;
-                byte[] temp =
-                    HelperJuegos.EncryptPassword(password, salt);
-                byte[] passUser = user.Password;
-                bool response =
-                    HelperJuegos.CompareArrays(temp, passUser);
-                if (response == true)
-                {
-                    return user;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            
         }
 
         public List<Usuario> GetUsuarios()

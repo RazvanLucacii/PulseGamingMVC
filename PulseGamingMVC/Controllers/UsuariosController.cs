@@ -5,16 +5,20 @@ using PulseGamingMVC.Repositories;
 using PulseGamingMVC.Extensions;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.Http.HttpResults;
+using PulseGamingMVC.Services;
+using PulseGamingMVC.Filters;
 
 
 namespace PulseGamingMVC.Controllers
 {
     public class UsuariosController : Controller
     {
+        private ServicePulseGaming service;
         private IRepositoryUsuarios repo;
 
-        public UsuariosController(IRepositoryUsuarios repo)
+        public UsuariosController(ServicePulseGaming service, IRepositoryUsuarios repo)
         {
+            this.service = service;
             this.repo = repo;
         }
 
@@ -24,9 +28,9 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RegistrarUsuario(string nombre, string apellidos, string email, string password, int telefono, int IDRole)
+        public async Task<IActionResult> RegistrarUsuario(string password, string nombre, string apellidos, string email, int telefono, int IDRole)
         {
-            await this.repo.RegisterUser(nombre, apellidos, email, password, telefono, IDRole);
+            await this.repo.RegistrarUsuario(password, nombre, apellidos, email, telefono, IDRole);
             ViewData["MENSAJE"] = "Usuario registrado correctamente.";
             return RedirectToAction("Login", "Usuarios");
         }
@@ -34,6 +38,14 @@ namespace PulseGamingMVC.Controllers
         public IActionResult Login()
         {
             return View();
+        }
+
+        [AuthorizeUsuarios]
+        public async Task<IActionResult> Perfil()
+        {
+            Usuario usuario =
+                await this.service.GetPerfilUsuarioAsync();
+            return View(usuario);
         }
 
         [HttpPost]

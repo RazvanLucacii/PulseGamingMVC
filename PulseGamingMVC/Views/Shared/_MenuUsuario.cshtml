@@ -1,0 +1,51 @@
+﻿@{
+    Usuario user = Context.Session.GetObject<Usuario>("USUARIO");
+}﻿
+
+@if (Context.User.Identity.IsAuthenticated)
+{
+    string userRole = Context.Session.GetString("UserRole");
+    if (userRole == "1") // Si el rol del usuario es administrador
+    {
+        <li>
+            <a class="dropdown-item" asp-controller="Empleados" asp-action="Perfil">
+                Mi perfil
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Dashboard">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item text-dark" asp-controller="Juegos" asp-action="PedidosUsuario">
+                Mis pedidos
+            </a>
+        </li>
+    }
+    else
+    {
+        <li>
+            <a class="dropdown-item" asp-controller="Empleados" asp-action="Perfil">
+                Mi perfil
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item text-dark" asp-controller="Juegos" asp-action="PedidosUsuario">
+                Mis pedidos
+            </a>
+        </li>
+    }
+    <li>
+        <a class="dropdown-item"
+            asp-controller="Managed" asp-action="Logout">
+            LogOut
+        </a>
+    </li>
+    
+}
+else
+{
+    <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="Perfil">Log-In</a></li>
+    <li><a class="dropdown-item" asp-area="" asp-controller="Usuarios" asp-action="RegistrarUsuario">Register</a></li>
+}
