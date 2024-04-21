@@ -37,12 +37,11 @@ namespace PulseGamingMVC.Controllers
                 ClaimsIdentity identity =
                     new ClaimsIdentity
                     (CookieAuthenticationDefaults.AuthenticationScheme
-                    , ClaimTypes.Email, ClaimTypes.Role);
-
+                    , ClaimTypes.Email, "Password");
                 identity.AddClaim
                     (new Claim(ClaimTypes.Email, model.Email));
                 identity.AddClaim
-                    (new Claim(ClaimTypes.NameIdentifier, model.Password));
+                    (new Claim("Password", model.Password));
                 identity.AddClaim
                     (new Claim("TOKEN", token));
                 ClaimsPrincipal userPrincipal =

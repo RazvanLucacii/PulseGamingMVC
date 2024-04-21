@@ -6,14 +6,32 @@ using PulseGamingMVC.Data;
 using PulseGamingMVC.Repositories;
 using Microsoft.Extensions.Azure;
 using PulseGamingMVC.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
+    CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme =
+    CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme =
+    CookieAuthenticationDefaults.AuthenticationScheme;
+}).AddCookie();
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews
+    (options => options.EnableEndpointRouting = false);
 builder.Services.AddSession();
 
 builder.Services.AddTransient<ServicePulseGaming>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+});
 
 builder.Services.AddTransient<ServiceStorageBlobs>();
 string azureKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount")!;
@@ -49,13 +67,22 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(builder.Environment.WebRootPath)),
 
 });
+
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseSession();
 
-app.UseAuthorization();
-
-app.MapControllerRoute(
+app.UseMvc(routes =>
+{
+    routes.MapRoute(
     name: "default",
-    pattern: "{controller=Juegos}/{action=Inicio}/{id?}");
+    template: "{controller=Juegos}/{action=Inicio}/{id?}");
+});
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Juegos}/{action=Inicio}/{id?}");
 
 app.Run();

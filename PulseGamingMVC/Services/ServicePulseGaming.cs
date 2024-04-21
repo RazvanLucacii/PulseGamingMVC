@@ -1,8 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PulseGamingMVC.Data;
 using PulseGamingMVC.Models;
 using System.Net.Http.Headers;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PulseGamingMVC.Services
 {
@@ -11,10 +14,12 @@ namespace PulseGamingMVC.Services
         private string UrlApi;
         private MediaTypeWithQualityHeaderValue header;
         private IHttpContextAccessor httpContextAccessor;
+        private PulseGamingContext context;
 
 
-        public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, PulseGamingContext context)
         {
+            this.context = context;
             this.httpContextAccessor = httpContextAccessor;
             this.header = new MediaTypeWithQualityHeaderValue("application/json");
             this.UrlApi = configuration.GetValue<string>("ApiUrls:ApiJuegos");
@@ -120,6 +125,90 @@ namespace PulseGamingMVC.Services
             return usuario;
         }
 
+        public async Task<List<Juego>> GetGrupoJuegosAsync(int posicion)
+        {
+            string request = "api/juegos/getpaginacionjuegos/" + posicion;
+            List<Juego> data = await this.CallApiAsync<List<Juego>>(request);
+            return data;
+        }
+
+        public async Task<List<Juego>> GetJuegosGenerosAsync(int idgenero)
+        {
+            string request = "api/juegos/getjuegosgeneros/" + idgenero;
+            List<Juego> data = await this.CallApiAsync<List<Juego>>(request);
+            return data;
+        }
+
+        public async Task<List<Juego>> GetJuegosPrecioDescAsync()
+        {
+            string request = "api/juegos/getjuegospreciodesc";
+            List<Juego> data = await this.CallApiAsync<List<Juego>>(request);
+            return data;
+        }
+
+        public async Task<List<Juego>> GetJuegosPrecioAsceAsync()
+        {
+            string request = "api/juegos/getjuegosprecioasce";
+            List<Juego> data = await this.CallApiAsync<List<Juego>>(request);
+            return data;
+        }
+
+        public async Task<int> GetNumeroJuegosAsync()
+        {
+            string request = "api/juegos/getnumerojuegos";
+            int data = await this.CallApiAsync<int>(request);
+            return data;
+        }
+
+        public async Task<List<DetallePedidoView>> GetProductosPedidoUsuarioAsync(int idusuario)
+        {
+            string request = "api/juegos/getproductospedidousuario/" + idusuario;
+            List<DetallePedidoView> data = await this.CallApiAsync<List<DetallePedidoView>>(request);
+            return data;
+        }
+
+        public async Task<int> GetMaxIdDetallePedidoAsync()
+        {
+            string request = "api/juegos/getmaxiddetallepedido";
+            int data = await this.CallApiAsync<int>(request);
+            return data;
+        }
+
+        public async Task<int> GetMaxIdPedidoAsync()
+        {
+            string request = "api/juegos/getmaxidpedido";
+            int data = await this.CallApiAsync<int>(request);
+            return data;
+        }
+
+        public async Task InsertPedidoAsync(int idusuario, List<Juego> carrito)
+        {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/admin/insertpedido";
+                client.BaseAddress = new Uri(this.UrlApi);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
+                var total = 0.0m;
+                foreach (Juego juego in carrito)
+                {
+                    total = juego.PrecioJuego + total;
+                }
+                Pedido pedido = new Pedido
+                {
+                    IDPedido = await GetMaxIdPedidoAsync(),
+                    IDUsuario = idusuario,
+                    FechaPedido = DateTime.Now,
+                    Total = total
+                };
+                string jsonPedido = JsonConvert.SerializeObject(pedido);
+                StringContent content = new StringContent(jsonPedido, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PostAsync(request, content);
+            }
+        }
+
         public async Task InsertJuegoAsync(int id, string nombre, int idgenero, string imagen, decimal precio, string descripcion, int ideditor)
         {
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
@@ -189,6 +278,13 @@ namespace PulseGamingMVC.Services
             return data;
         }
 
+        public async Task<Genero> GetGeneroAsync(int idgenero)
+        {
+            string request = "api/admin/getgenero" + idgenero;
+            Genero data = await this.CallApiAsync<Genero>(request);
+            return data;
+        }
+
         public async Task InsertGeneroAsync(int id, string nombre)
         {
             using (HttpClient client = new HttpClient())
@@ -239,6 +335,13 @@ namespace PulseGamingMVC.Services
         {
             string request = "api/admin/geteditores";
             List<Editor> data = await this.CallApiAsync<List<Editor>>(request);
+            return data;
+        }
+
+        public async Task<Editor> GetEditorAsync(int ideditor)
+        {
+            string request = "api/admin/geteditor" + ideditor;
+            Editor data = await this.CallApiAsync<Editor>(request);
             return data;
         }
 
@@ -295,7 +398,14 @@ namespace PulseGamingMVC.Services
             return data;
         }
 
-        public async Task InsertUsuarioAsync(int id, string nombre, string apellidos, string email, string password, int telefono, int IDRole)
+        public async Task<Usuario> GetUsuarioAsync(int idusuario)
+        {
+            string request = "api/admin/getusuario" + idusuario;
+            Usuario data = await this.CallApiAsync<Usuario>(request);
+            return data;
+        }
+
+        public async Task InsertUsuarioAsync(int id, string password, string nombre, string apellidos, string email, int telefono, int IDRole)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -305,10 +415,10 @@ namespace PulseGamingMVC.Services
                 client.DefaultRequestHeaders.Accept.Add(this.header);
                 Usuario usuario = new Usuario();
                 usuario.IdUsuario = id;
+                usuario.Password = password;
                 usuario.Nombre = nombre;
                 usuario.Apellidos = apellidos;
                 usuario.Email = email;
-                usuario.Password = password;
                 usuario.Telefono = telefono;
                 usuario.IDRole = IDRole;
                 string json = JsonConvert.SerializeObject(usuario);
@@ -317,6 +427,27 @@ namespace PulseGamingMVC.Services
             }
         }
 
+        public async Task UpdateUsuarioAsync(int id, string password, string nombre, string apellidos, string email, int telefono, int IDRole)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                string request = "api/admin/updateusuario";
+                client.BaseAddress = new Uri(this.UrlApi);
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Accept.Add(this.header);
+                Usuario usuario = new Usuario();
+                usuario.IdUsuario = id;
+                usuario.Password = password;
+                usuario.Nombre = nombre;
+                usuario.Apellidos = apellidos;
+                usuario.Email = email;
+                usuario.Telefono = telefono;
+                usuario.IDRole = IDRole;
+                string json = JsonConvert.SerializeObject(usuario);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await client.PutAsync(request, content);
+            }
+        }
 
         public async Task DeleteUsuarioAsync(int idusuario)
         {

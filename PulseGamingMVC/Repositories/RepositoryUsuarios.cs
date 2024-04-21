@@ -62,11 +62,6 @@ namespace PulseGamingMVC.Repositories
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<Usuario> LogInUserAsync(string email, string password)
-        {
-            
-        }
-
         public List<Usuario> GetUsuarios()
         {
             string sql = "SP_TODOS_USUARIOS";
@@ -85,29 +80,7 @@ namespace PulseGamingMVC.Repositories
 
         public async Task ModificarUsuario(int idUsuario, string nombre, string apellidos, string email, string password, int telefono, int IDRole)
         {
-            Usuario usuario = FindUsuarioById(idUsuario);
-            if (usuario == null)
-            {
-                throw new ArgumentNullException("El usuario no existe.");
-            }
-
-            // Actualiza los datos del usuario con los nuevos valores
-            usuario.Nombre = nombre;
-            usuario.Apellidos = apellidos;
-            usuario.Email = email;
-            usuario.Telefono = telefono;
-            usuario.IDRole = IDRole;
-
-            // Si se proporciona una nueva contraseña, la actualiza
-            if (!string.IsNullOrEmpty(password))
-            {
-                usuario.Salt = HelperJuegos.GenerateSalt();
-                usuario.Password = HelperJuegos.EncryptPassword(password, usuario.Salt);
-            }
-
-            // Guarda los cambios en la base de datos
-            this.context.Entry(usuario).State = EntityState.Modified;
-            await this.context.SaveChangesAsync();
+            
         }
 
         public void DeleteUsuario(int idUsuario)
@@ -115,6 +88,11 @@ namespace PulseGamingMVC.Repositories
             Usuario usuario = this.FindUsuarioById(idUsuario);
             this.context.Usuarios.Remove(usuario);
             this.context.SaveChanges();
-        }        
+        }
+
+        public Task<Usuario> LogInUserAsync(string email, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

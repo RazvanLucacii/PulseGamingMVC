@@ -5,9 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Extensions;
+using PulseGamingMVC.Filters;
 using PulseGamingMVC.Models;
 using PulseGamingMVC.Repositories;
+using PulseGamingMVC.Services;
 using System;
+using System.Security.Claims;
 
 namespace PulseGamingMVC.Controllers
 {
@@ -15,9 +18,11 @@ namespace PulseGamingMVC.Controllers
     {
         private IRepositoryJuegos repo;
         private IMemoryCache memoryCache;
+        private ServicePulseGaming service;
 
-        public JuegosController(IRepositoryJuegos repo, IMemoryCache memoryCache)
+        public JuegosController(IRepositoryJuegos repo, IMemoryCache memoryCache, ServicePulseGaming service)
         {
+            this.service = service;
             this.repo = repo;
             this.memoryCache = memoryCache;
         }
@@ -66,18 +71,18 @@ namespace PulseGamingMVC.Controllers
             {
                 posicion = 1;
             }
-            int numeroRegistros = await this.repo.GetNumeroJuegosAsync();
+            int numeroRegistros = await this.service.GetNumeroJuegosAsync();
             ViewData["REGISTROS"] = numeroRegistros;
             ViewData["POSICION"] = posicion;
 
             if (precio == "desc")
             {
-                var juegosDesc = this.repo.GetJuegosPrecioDesc();
+                var juegosDesc = await this.service.GetJuegosPrecioDescAsync();
                 return View(juegosDesc);
             }
             else if(precio == "asc")
             {
-                var juegosasc = this.repo.GetJuegosPrecioAsce();
+                var juegosasc = await this.service.GetJuegosPrecioAsceAsync();
                 return View(juegosasc);
             }
             else
@@ -99,21 +104,21 @@ namespace PulseGamingMVC.Controllers
                     juegosFavoritos.Add(juego);
                     this.memoryCache.Set("FAVORITOS", juegosFavoritos);
                 }
-                List<Juego> juegos = await this.repo.GetGrupoJuegosAsync(posicion.Value);
+                List<Juego> juegos = await this.service.GetGrupoJuegosAsync(posicion.Value);
                 return View(juegos);
             }
 
         }
 
-        public IActionResult Details(int IdJuego)
+        public async Task<IActionResult> Details(int IdJuego)
         {
-            Juego juegoDetalle = this.repo.FindJuego(IdJuego);
+            Juego juegoDetalle = await this.service.GetJuegoAsync(IdJuego);
             return View(juegoDetalle);
         }
 
         public async Task<IActionResult> ListarJuegosCategorias(int idgenero)
         {
-            List<Juego> juegosCategorias = this.repo.GetJuegosGeneros(idgenero);
+            List<Juego> juegosCategorias = await this.service.GetJuegosGenerosAsync(idgenero);
             return View(juegosCategorias);
         }
 
@@ -188,19 +193,10 @@ namespace PulseGamingMVC.Controllers
             return RedirectToAction("Carrito");
         }
 
-        private int ObtenerIdUsuario()
-        {
-            // Verificamos si el usuario está presente en la sesión
-            Usuario usuario = HttpContext.Session.GetObject<Usuario>("USUARIO");
-
-            // Si el usuario está presente en la sesión, devolvemos su ID
-            // Si no está presente o es nulo, devolvemos algún valor predeterminado o manejamos la situación según sea necesario
-            return usuario != null ? usuario.IdUsuario : 0;
-        }
-
+        [AuthorizeUsuarios]
         public async Task<IActionResult> RealizarCompra()
         {
-            int idUsuario = ObtenerIdUsuario();
+            var idusuario = int.Parse(HttpContext.User.FindFirst("IdUsuario").Value);
 
             // Obtenemos la lista de productos en la cesta desde la sesión
             List<int> cesta = HttpContext.Session.GetObject<List<int>>("CARRITO");
@@ -209,7 +205,7 @@ namespace PulseGamingMVC.Controllers
             List<Juego> productosEnCarrito = await this.repo.GetProductosEnCarritoAsync(cesta);
 
             // Creamos el pedido
-            await this.repo.CreatePedidoAsync(idUsuario, productosEnCarrito);
+            await this.service.InsertPedidoAsync(idusuario, productosEnCarrito);
 
             // Limpiamos la cesta después de crear el pedido
             HttpContext.Session.Remove("CARRITO");
@@ -220,8 +216,8 @@ namespace PulseGamingMVC.Controllers
 
         public async Task<IActionResult> PedidosUsuario()
         {
-            int idUsuario = ObtenerIdUsuario();
-            List<DetallePedidoView> pedidosUsuarios = await this.repo.GetProductosPedidoUsuarioAsync(idUsuario);
+            var idUsuario = int.Parse(HttpContext.User.FindFirst("IdUsuario").Value);
+            List<DetallePedidoView> pedidosUsuarios = await this.service.GetProductosPedidoUsuarioAsync(idUsuario);
             return View(pedidosUsuarios);
         }
     }

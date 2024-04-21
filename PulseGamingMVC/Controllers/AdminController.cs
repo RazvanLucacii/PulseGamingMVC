@@ -6,6 +6,7 @@ using PulseGamingMVC.Data;
 using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
 using PulseGamingMVC.Repositories;
+using PulseGamingMVC.Services;
 using System.Drawing.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -26,14 +27,16 @@ namespace PulseGamingMVC.Controllers
         private ServiceStorageBlobs storageBlobs;
         private IRepositoryJuegos repoGame;
         private IRepositoryUsuarios repoUsu;
+        private ServicePulseGaming service;
 
         private ListasCrearJuego listasCrearJuego = new ListasCrearJuego();
 
-        public AdminController(IRepositoryJuegos repoGame, IRepositoryUsuarios repoUsu, ServiceStorageBlobs storageBlobs)
+        public AdminController(IRepositoryJuegos repoGame, IRepositoryUsuarios repoUsu, ServiceStorageBlobs storageBlobs, ServicePulseGaming service)
         {
             this.repoGame = repoGame;
             this.repoUsu = repoUsu;
             this.storageBlobs = storageBlobs;
+            this.service = service;
         }
 
         public IActionResult Dashboard()
@@ -42,9 +45,9 @@ namespace PulseGamingMVC.Controllers
         }
 
         //USUARIOS
-        public IActionResult UsuariosView()
+        public async Task<IActionResult> UsuariosView()
         {
-            List<Usuario> usuarios = this.repoUsu.GetUsuarios();
+            List<Usuario> usuarios = await this.service.GetUsuariosAsync();
             return View(usuarios);
         }
 
@@ -55,15 +58,15 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUsuario(string password, string nombre, string apellidos, string email, int telefono, int IDRole)
+        public async Task<IActionResult> CreateUsuario(Usuario usu)
         {
-            await this.repoUsu.RegistrarUsuario(password, nombre, apellidos, email, telefono, IDRole);
+            await this.service.InsertUsuarioAsync(usu.IdUsuario, usu.Password, usu.Nombre, usu.Apellidos, usu.Email, usu.Telefono, usu.IDRole);
             return RedirectToAction("UsuariosView", "Admin");
         }
 
-        public IActionResult ModificarUsuario(int idUsuario)
+        public async Task<IActionResult> ModificarUsuario(int idUsuario)
         {
-            Usuario usuario = this.repoUsu.FindUsuarioById(idUsuario);
+            Usuario usuario = await this.service.GetUsuarioAsync(idUsuario);
             if (usuario == null)
             {
                 return NotFound();
@@ -72,29 +75,29 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ModificarUsuario(int idUsuario, string nombre, string apellidos, string email, string password, int telefono, int IDRole)
+        public IActionResult ModificarUsuario(Usuario usu)
         {
-            this.repoUsu.ModificarUsuario(idUsuario, nombre, apellidos, email, password, telefono, IDRole);
+            this.service.UpdateUsuarioAsync(usu.IdUsuario, usu.Password, usu.Nombre, usu.Apellidos, usu.Email, usu.Telefono, usu.IDRole);
             return RedirectToAction("UsuariosView");
         }
 
-        public IActionResult DeleteUsuario(int idUsuario)
+        public async Task<IActionResult> DeleteUsuario(int idUsuario)
         {
-            this.repoUsu.DeleteUsuario(idUsuario);
+            await this.service.DeleteUsuarioAsync(idUsuario);
             return RedirectToAction("UsuariosView");
         }
 
         //JUEGOS
-        public IActionResult JuegosView()
+        public async Task<IActionResult> JuegosView()
         {
-            List<Juego> juegos = this.repoGame.GetJuegos();
+            List<Juego> juegos = await this.service.GetJuegosAsync();
             return View(juegos);
         }
 
         public async Task<IActionResult> CreateJuego()
         {
-            List<Genero> generos = await this.repoGame.GetGenerosAsync();
-            List<Editor> editores = await this.repoGame.GetEditoresAsync();
+            List<Genero> generos = await this.service.GetGenerosAsync();
+            List<Editor> editores = await this.service.GetEditoresAsync();
 
             ViewData["GENEROS"] = generos;
             ViewData["EDITORES"] = editores;
@@ -106,15 +109,16 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> CreateJuego(Juego juego, IFormFile imagen)
         {
             await this.storageBlobs.UploadBlobAsync("imgs", imagen.FileName, imagen.OpenReadStream());
-            juego.ImagenJuego = await this.storageBlobs.GetBlobUrlAsync("imgs" ,imagen.FileName);
-            this.repoGame.RegistrarJuego(juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
+            juego.ImagenJuego = await this.storageBlobs.GetBlobUrlAsync("imgs", imagen.FileName);
+            await this.service.InsertJuegoAsync(juego.IdJuego, juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView");
         }
+
         public async Task<IActionResult> ModificarJuego(int idJuego)
         {
-            Juego juego = this.repoGame.FindJuego(idJuego);
-            List<Genero> generos = await this.repoGame.GetGenerosAsync();
-            List<Editor> editores = await this.repoGame.GetEditoresAsync();
+            Juego juego = await this.service.GetJuegoAsync(idJuego);
+            List<Genero> generos = await this.service.GetGenerosAsync();
+            List<Editor> editores = await this.service.GetEditoresAsync();
 
             ViewData["GENEROS"] = generos;
             ViewData["EDITORES"] = editores;
@@ -122,22 +126,22 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult ModificarJuego(Juego juego)
+        public async Task<IActionResult> ModificarJuego(Juego juego)
         {
-            this.repoGame.ModificarJuego(juego.IdJuego, juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
+            await this.service.UpdateJuegoAsync(juego.IdJuego, juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
             return RedirectToAction("JuegosView", "Admin");
         }
 
-        public IActionResult DeleteJuego(int idJuego)
+        public async Task<IActionResult> DeleteJuego(int idJuego)
         {
-            this.repoGame.DeleteJuego(idJuego);
+            await this.service.DeleteJuegoAsync(idJuego);
             return RedirectToAction("JuegosView", "Admin");
         }
 
         //Generos
         public async Task<IActionResult> GenerosView()
         {
-            List<Genero> generos = await this.repoGame.GetGenerosAsync();
+            List<Genero> generos = await this.service.GetGenerosAsync();
             return View(generos);
         }
 
@@ -147,35 +151,35 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateGenero(Genero genero)
+        public async Task<IActionResult> CreateGenero(Genero genero)
         {
-            this.repoGame.CrearGenero(genero.NombreGenero);
+            await this.service.InsertGeneroAsync(genero.IdGenero, genero.NombreGenero);
             return RedirectToAction("GenerosView", "Admin");
         }
 
         public async Task<IActionResult> ModificarGenero(int idGenero)
         {
-            Genero genero = await this.repoGame.FindGeneroAsync(idGenero);
+            Genero genero = await this.service.GetGeneroAsync(idGenero);
             return View(genero);
         }
 
         [HttpPost]
-        public IActionResult ModificarGenero(Genero genero)
+        public async Task<IActionResult> ModificarGenero(Genero genero)
         {
-            this.repoGame.ModificarGenero(genero.IdGenero, genero.NombreGenero);
+            await this.service.UpdateGeneroAsync(genero.IdGenero, genero.NombreGenero);
             return RedirectToAction("GenerosView", "Admin");
         }
 
-        public IActionResult DeleteGenero(int idGenero)
+        public async Task<IActionResult> DeleteGenero(int idGenero)
         {
-            this.repoGame.DeleteGenero(idGenero);
+            await this.service.DeleteGeneroAsync(idGenero);
             return RedirectToAction("GenerosView", "Admin");
         }
 
         //Editores
         public async Task<IActionResult> EditoresView()
         {
-            List<Editor> editores = await this.repoGame.GetEditoresAsync();
+            List<Editor> editores = await this.service.GetEditoresAsync();
             return View(editores);
         }
 
@@ -185,28 +189,28 @@ namespace PulseGamingMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEditor(Editor editor)
+        public async Task<IActionResult> CreateEditor(Editor editor)
         {
-            this.repoGame.CrearEditor(editor.NombreEditor);
+            await this.service.InsertEditorAsync(editor.IDEditor, editor.NombreEditor);
             return RedirectToAction("EditoresView");
         }
 
         public async Task<IActionResult> ModificarEditor(int idEditor)
         {
-            Editor editor = await this.repoGame.FindEditorAsync(idEditor);
+            Editor editor = await this.service.GetEditorAsync(idEditor);
             return View(editor);
         }
 
         [HttpPost]
-        public IActionResult ModificarEditor(Editor editor)
+        public async Task<IActionResult> ModificarEditor(Editor editor)
         {
-            this.repoGame.ModificarEditor(editor.IDEditor, editor.NombreEditor);
+            await this.service.UpdateEditorAsync(editor.IDEditor, editor.NombreEditor);
             return RedirectToAction("EditoresView", "Admin");
         }
 
-        public IActionResult DeleteEditor(int idEditor)
+        public async Task<IActionResult> DeleteEditor(int idEditor)
         {
-            this.repoGame.DeleteEditor(idEditor);
+            await this.service.DeleteEditorAsync(idEditor);
             return RedirectToAction("EditoresView", "Admin");
         }
     }
