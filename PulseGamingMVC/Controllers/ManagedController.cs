@@ -33,6 +33,11 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
+                Usuario? usuario = (await service.GetUsuariosAsync())
+                    .Where(user => user.Email.Equals(model.Email)
+                    && user.Password.Equals(model.Password))
+                    .FirstOrDefault();
+                    
                 HttpContext.Session.SetString("TOKEN", token);
                 ClaimsIdentity identity =
                     new ClaimsIdentity
@@ -44,6 +49,8 @@ namespace PulseGamingMVC.Controllers
                     (new Claim("Password", model.Password));
                 identity.AddClaim
                     (new Claim("TOKEN", token));
+                identity.AddClaim(new Claim("IdUsuario", usuario!.IdUsuario.ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Role, usuario.IDRole.ToString()));
                 ClaimsPrincipal userPrincipal =
                     new ClaimsPrincipal(identity);
 

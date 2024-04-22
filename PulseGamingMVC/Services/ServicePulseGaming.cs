@@ -186,7 +186,7 @@ namespace PulseGamingMVC.Services
             string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
-                string request = "api/admin/insertpedido";
+                string request = "api/juegos/insertpedido";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
@@ -203,9 +203,22 @@ namespace PulseGamingMVC.Services
                     FechaPedido = DateTime.Now,
                     Total = total
                 };
-                string jsonPedido = JsonConvert.SerializeObject(pedido);
-                StringContent content = new StringContent(jsonPedido, Encoding.UTF8, "application/json");
+                var data = new
+                {
+                    pedido,
+                    carrito,
+                };
+                string jsonData = JsonConvert.SerializeObject(data);
+                StringContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PostAsync(request, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Insertado Pedido");
+                }
+                else
+                {
+                    Console.WriteLine(response.Content.ReadAsStringAsync());
+                }
             }
         }
 
