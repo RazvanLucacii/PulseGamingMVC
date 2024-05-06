@@ -1,11 +1,10 @@
-﻿@{
-    Usuario user = Context.Session.GetObject<Usuario>("USUARIO");
-}﻿
+﻿@using System.Security.Claims
+
 
 @if (Context.User.Identity.IsAuthenticated)
 {
-    string userRole = Context.Session.GetString("UserRole");
-    if (userRole == "1") // Si el rol del usuario es administrador
+    var userRole = int.Parse(Context.User.FindFirst(claim => claim.Type == ClaimTypes.Role).Value);
+    if (userRole == 1) // Si el rol del usuario es administrador
     {
         <li>
             <a class="dropdown-item" asp-controller="Usuarios" asp-action="Perfil">
