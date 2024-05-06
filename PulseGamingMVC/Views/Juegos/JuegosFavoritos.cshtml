@@ -10,49 +10,48 @@
 @if (Model != null)
 {
     <table class="table table-bordered table-info">
-
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdJuego)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreJuego)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagenJuego)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrecioJuego)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdJuego)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NombreJuego)
-                </td>
-                <td>
-                        <img src="@urlImages/@item.ImagenJuego" style="width: 80px; height: 100px" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrecioJuego)
-                </td>
-                <td>
-                    <a asp-controller="Juegos"
-                        asp-action="DeleteFavorito"
-                        asp-route-idjuego="@item.IdJuego"
-                        class="btn btn-dark">Delete favorito</a>
-                    <a asp-controller="Juegos" asp-action="Details" asp-route-IdJuego="@item.IdJuego"
-                        class="btn btn-dark">Detalles</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdJuego)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NombreJuego)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ImagenJuego)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PrecioJuego)
+                </th>
+                <th></th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdJuego)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreJuego)
+                    </td>
+                    <td>
+                            <img src="@urlImages/@item.ImagenJuego" style="width: 80px; height: 100px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrecioJuego)
+                    </td>
+                    <td>
+                        <a asp-controller="Juegos"
+                            asp-action="DeleteFavorito"
+                            asp-route-idjuego="@item.IdJuego"
+                            class="btn btn-dark">Delete favorito</a>
+                        <a asp-controller="Juegos" asp-action="Details" asp-route-IdJuego="@item.IdJuego"
+                            class="btn btn-dark">Detalles</a>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 }

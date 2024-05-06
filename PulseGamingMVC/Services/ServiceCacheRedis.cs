@@ -43,7 +43,9 @@ namespace PulseGamingMVC.Services
 
         public async Task<List<Juego>> GetJuegosFavoritosAsync()
         {
-            string jsonJuegos = this.database.StringGet("favoritos");
+            int idusuario = int.Parse(this.httpContextAccessor.HttpContext.User.FindFirstValue("IdUsuario"));
+
+            string jsonJuegos = await this.database.StringGetAsync("favoritos" + "-" + idusuario);
             if (jsonJuegos == null)
             {
                 return null;
@@ -57,6 +59,8 @@ namespace PulseGamingMVC.Services
 
         public async Task DeleteJuegoFavoritoAsync(int idjuego)
         {
+            int idusuario = int.Parse(this.httpContextAccessor.HttpContext.User
+                    .FindFirstValue("IdUsuario"));
             List<Juego> favoritos = await this.GetJuegosFavoritosAsync();
             if (favoritos != null)
             {
@@ -67,14 +71,14 @@ namespace PulseGamingMVC.Services
                 if (favoritos.Count == 0)
                 {
 
-                    this.database.KeyDelete("favoritos");
+                    await this.database.KeyDeleteAsync("favoritos" + "-" + idusuario);
                 }
                 else
                 {
 
                     string jsonjuegos = JsonConvert.SerializeObject(favoritos);
 
-                    this.database.StringSet("favoritos", jsonjuegos, TimeSpan.FromMinutes(30));
+                    await this.database.StringSetAsync("favoritos" + "-" + idusuario, jsonjuegos, TimeSpan.FromMinutes(30));
                 }
             }
         }
