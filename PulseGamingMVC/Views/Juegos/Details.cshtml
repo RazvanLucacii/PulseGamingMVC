@@ -39,6 +39,12 @@
                         Comprar
                     </button>
                 </form>
+                <a asp-controller="Juegos"
+                   asp-action="AñadirFavorito"
+                   asp-route-idjuego="@Model.IdJuego"
+                   class="btn btn-dark">
+                    <i class="bi bi-heart"></i>
+                </a>
             </div>
         </div>
     </div>

@@ -19,12 +19,14 @@ namespace PulseGamingMVC.Controllers
         private IRepositoryJuegos repo;
         private IMemoryCache memoryCache;
         private ServicePulseGaming service;
+        private ServiceCacheRedis serviceCache;
 
-        public JuegosController(IRepositoryJuegos repo, IMemoryCache memoryCache, ServicePulseGaming service)
+        public JuegosController(IRepositoryJuegos repo, IMemoryCache memoryCache, ServicePulseGaming service, ServiceCacheRedis serviceCache)
         {
             this.service = service;
             this.repo = repo;
             this.memoryCache = memoryCache;
+            this.serviceCache = serviceCache;
         }
 
         public IActionResult Inicio()
@@ -32,34 +34,10 @@ namespace PulseGamingMVC.Controllers
             return View();
         }
 
-        public async Task<IActionResult> JuegosFavoritos(int? ideliminar)
+        public async Task<IActionResult> JuegosFavoritos()
         {
-            var user = HttpContext.Session.GetString("USUARIO");
-            if (user == null)
-            {
-                return RedirectToAction("Login", "Usuarios");
-            }
-            else
-            {
-                    if (ideliminar != null)
-                    {
-                        List<Juego> juegos = this.memoryCache.Get<List<Juego>>("FAVORITOS");
-
-                        Juego juego = juegos.FirstOrDefault(z => z.IdJuego == ideliminar.Value);
-
-                        juegos.Remove(juego);
-
-                        if (juegos.Count == 0)
-                        {
-                            this.memoryCache.Remove("FAVORITOS");
-                        }
-                        else
-                        {
-                            this.memoryCache.Set("FAVORITOS", juegos);
-                        }
-                    }
-                return View();
-            }
+            List<Juego> juegos = await this.serviceCache.GetJuegosFavoritosAsync();
+            return View(juegos);
         }
 
         public async Task<IActionResult> Games(string precio, string search, int? posicion, int? idfavorito)
@@ -87,27 +65,24 @@ namespace PulseGamingMVC.Controllers
             }
             else
             {
-                if (idfavorito != null)
-                {
-                    List<Juego> juegosFavoritos;
-                    if (this.memoryCache.Get("FAVORITOS") == null)
-                    {
-                        juegosFavoritos = new List<Juego>();
-                    }
-                    else
-                    {
-                        juegosFavoritos =
-                            this.memoryCache.Get<List<Juego>>("FAVORITOS");
-                    }
-                    Juego juego =
-                        this.repo.FindJuego(idfavorito.Value);
-                    juegosFavoritos.Add(juego);
-                    this.memoryCache.Set("FAVORITOS", juegosFavoritos);
-                }
                 List<Juego> juegos = await this.service.GetGrupoJuegosAsync(posicion.Value);
                 return View(juegos);
             }
 
+        }
+
+        [AuthorizeUsuarios]
+        public async Task<IActionResult> AñadirFavorito(int idjuego)
+        {
+            Juego juego = await this.service.GetJuegoAsync(idjuego);
+            await this.serviceCache.AddJuegoFavoritoAsync(juego);
+            return RedirectToAction("Games");
+        }
+
+        public async Task<IActionResult> DeleteFavorito(int idjuego)
+        {
+            await this.serviceCache.DeleteJuegoFavoritoAsync(idjuego);
+            return RedirectToAction("JuegosFavoritos");
         }
 
         public async Task<IActionResult> Details(int IdJuego)

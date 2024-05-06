@@ -1,49 +1,58 @@
-﻿﻿@{
-    List<Juego> juegos = memoryCache.Get<List<Juego>>("FAVORITOS");
-}
+﻿@model IEnumerable<PulseGamingMVC.Models.Juego>
 
 @{
-    ViewData["Title"] = "JuegosFavoritos";
+    ViewData["Title"] = "Favoritos";
+    string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
 }
 
-<h1>Juegos Favoritos</h1>
+<h1 style="color:blue">Favoritos</h1>
 
-@if (juegos == null)
+@if (Model != null)
 {
-    <h2>No tienes juegos favoritos</h2>
-}
+    <table class="table table-bordered table-info">
 
-@if (juegos != null)
-{
-    <table class="table">
-        <thead>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdJuego)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreJuego)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImagenJuego)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioJuego)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
             <tr>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Imagen</th>
-                <th></th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdJuego)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NombreJuego)
+                </td>
+                <td>
+                        <img src="@urlImages/@item.ImagenJuego" style="width: 80px; height: 100px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecioJuego)
+                </td>
+                <td>
+                    <a asp-controller="Juegos"
+                        asp-action="DeleteFavorito"
+                        asp-route-idjuego="@item.IdJuego"
+                        class="btn btn-dark">Delete favorito</a>
+                    <a asp-controller="Juegos" asp-action="Details" asp-route-IdJuego="@item.IdJuego"
+                        class="btn btn-dark">Detalles</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (Juego item in juegos)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NombreJuego)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PrecioJuego)
-                    </td>
-                    <td>
-                        <img src="~/images/@Html.DisplayFor(modelItem => item.ImagenJuego)" style="width:80px; height:100px" />
-                    </td>
-                    <td>
-                        <a asp-action="JuegosFavoritos" asp-controller="Juegos" asp-route-ideliminar="@item.IdJuego" class="btn btn-danger">
-                            Eliminar Favorito
-                        </a>
-                    </td>
-                </tr>
-            }
+        }
         </tbody>
     </table>
 }

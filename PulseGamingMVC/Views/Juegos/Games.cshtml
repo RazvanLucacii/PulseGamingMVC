@@ -6,7 +6,6 @@
     int posicion = (int)ViewData["POSICION"];
     var generos = ViewData["GENEROS"] as List<Genero>;
     int numeroPagina = 1;
-    List<Juego> favoritos = memoryCache.Get<List<Juego>>("FAVORITOS");
     string urlImages = configuration.GetValue<string>("AzureKeys:StorageImages");
 }
 
@@ -37,25 +36,6 @@
                                 <input type="hidden" name="idJuego" value="@game.IdJuego" />
                                 <button type="submit" class="btn btn-dark" id="comprarButton">Comprar</button>
                             </form>
-                            @if (favoritos == null)
-                            {
-                                <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark favorite-button" data-id="@game.IdJuego">
-                                    <i class="bi bi-heart"></i>
-                                </a>
-                            }
-                            else
-                            {
-                                if (favoritos.Count(juegoRow => juegoRow.IdJuego == game.IdJuego) >= 1)
-                                {
-                                    <span class="btn btn-dark"><i class="bi bi-heart-fill"></i></span>
-                                }
-                                else
-                                {
-                                    <a asp-action="Games" asp-controller="Juegos" asp-route-idfavorito="@game.IdJuego" class="btn btn-dark favorite-button" data-id="@game.IdJuego">
-                                        <i class="bi bi-heart"></i>
-                                    </a>
-                                }
-                            }
                         </div>
                     </div>
                 </div>

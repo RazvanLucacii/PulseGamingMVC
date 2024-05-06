@@ -16,11 +16,11 @@ namespace PulseGamingMVC.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task AddJuegoFavorito(Juego juego)
+        public async Task AddJuegoFavoritoAsync(Juego juego)
         {
             if (this.httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                int idUsuario = int.Parse(this.httpContextAccessor.HttpContext.User.FindFirstValue("IdUsuario"));
+                var idUsuario = int.Parse(this.httpContextAccessor.HttpContext.User.FindFirst("IdUsuario").Value);
 
                 string jsonJuegos = await this.database.StringGetAsync("favoritos" + "-" + idUsuario);
                 List<Juego> juegosList;
@@ -41,7 +41,7 @@ namespace PulseGamingMVC.Services
             }
         }
 
-        public List<Juego> GetJuegosFavoritos()
+        public async Task<List<Juego>> GetJuegosFavoritosAsync()
         {
             string jsonJuegos = this.database.StringGet("favoritos");
             if (jsonJuegos == null)
@@ -55,9 +55,9 @@ namespace PulseGamingMVC.Services
             }
         }
 
-        public void DeleteJuegoFavorito(int idjuego)
+        public async Task DeleteJuegoFavoritoAsync(int idjuego)
         {
-            List<Juego> favoritos = this.GetJuegosFavoritos();
+            List<Juego> favoritos = await this.GetJuegosFavoritosAsync();
             if (favoritos != null)
             {
                 Juego juego = favoritos.FirstOrDefault(z => z.IdJuego == idjuego);

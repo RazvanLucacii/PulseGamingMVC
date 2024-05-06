@@ -43,14 +43,7 @@
                         </li>
                         @await Component.InvokeAsync("MenuCategorias")
                         <li class="nav-item">
-                            @if (favoritos != null)
-                            {
-                                <a asp-controller="Juegos" asp-action="JuegosFavoritos" class="nav-link botonesCustom">Favoritos @favoritos.Count</a>
-                            }
-                            else
-                            {
-                                <a asp-controller="Juegos" asp-action="JuegosFavoritos" class="nav-link botonesCustom">Favoritos 0</a>
-                            }
+                            <a asp-controller="Juegos" asp-action="JuegosFavoritos" class="nav-link botonesCustom">Favoritos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link botonesCustom" asp-area="" asp-controller="Juegos" asp-action="Carrito">Carrito</a>    

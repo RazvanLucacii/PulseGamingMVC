@@ -18,16 +18,12 @@ namespace PulseGamingMVC.Services
         private IHttpContextAccessor httpContextAccessor;
         private PulseGamingContext context;
 
-        private XDocument document;
-
         public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, PulseGamingContext context, HelperPathProvider helper)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
             this.header = new MediaTypeWithQualityHeaderValue("application/json");
             this.UrlApi = configuration.GetValue<string>("ApiUrls:ApiJuegos");
-            string path = helper.MapPath("");
-            this.document = XDocument.Load(path);
         }
 
         public async Task<string> GetTokenAsync(string email, string password)
@@ -182,6 +178,13 @@ namespace PulseGamingMVC.Services
         public async Task<int> GetMaxIdPedidoAsync()
         {
             string request = "api/juegos/getmaxidpedido";
+            int data = await this.CallApiAsync<int>(request);
+            return data;
+        }
+
+        public async Task<int> GetMaxIdEditorAsync()
+        {
+            string request = "api/juegos/getmaxideditor";
             int data = await this.CallApiAsync<int>(request);
             return data;
         }

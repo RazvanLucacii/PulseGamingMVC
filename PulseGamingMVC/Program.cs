@@ -7,6 +7,7 @@ using PulseGamingMVC.Repositories;
 using Microsoft.Extensions.Azure;
 using PulseGamingMVC.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PulseGamingMVC.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,10 @@ builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = CacheRedis;
 });
+
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<HelperPathProvider>();
+builder.Services.AddTransient<ServiceCacheRedis>();
 
 builder.Services.AddTransient<ServiceStorageBlobs>();
 string azureKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount")!;
