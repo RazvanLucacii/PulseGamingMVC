@@ -31,8 +31,7 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> RegistrarUsuario(Usuario usu)
         {
             await this.service.InsertUsuarioAsync(usu.IdUsuario, usu.Password, usu.Nombre, usu.Apellidos, usu.Email, usu.Telefono, usu.IDRole);
-            ViewData["MENSAJE"] = "Usuario registrado correctamente.";
-            return RedirectToAction("Perfil", "Usuarios");
+            return RedirectToAction("Perfil");
         }
 
         [AuthorizeUsuarios]

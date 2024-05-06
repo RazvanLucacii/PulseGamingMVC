@@ -61,7 +61,7 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> CreateUsuario(Usuario usu)
         {
             await this.service.InsertUsuarioAsync(usu.IdUsuario, usu.Password, usu.Nombre, usu.Apellidos, usu.Email, usu.Telefono, usu.IDRole);
-            return RedirectToAction("UsuariosView", "Admin");
+            return RedirectToAction("UsuariosView");
         }
 
         public async Task<IActionResult> ModificarUsuario(int idUsuario)
@@ -129,13 +129,13 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> ModificarJuego(Juego juego)
         {
             await this.service.UpdateJuegoAsync(juego.IdJuego, juego.NombreJuego, juego.IDGenero, juego.ImagenJuego, juego.PrecioJuego, juego.Descripcion, juego.IdEditor);
-            return RedirectToAction("JuegosView", "Admin");
+            return RedirectToAction("JuegosView");
         }
 
         public async Task<IActionResult> DeleteJuego(int idJuego)
         {
             await this.service.DeleteJuegoAsync(idJuego);
-            return RedirectToAction("JuegosView", "Admin");
+            return RedirectToAction("JuegosView");
         }
 
         //Generos
@@ -154,7 +154,7 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> CreateGenero(Genero genero)
         {
             await this.service.InsertGeneroAsync(genero.IdGenero, genero.NombreGenero);
-            return RedirectToAction("GenerosView", "Admin");
+            return RedirectToAction("GenerosView");
         }
 
         public async Task<IActionResult> ModificarGenero(int idGenero)
@@ -167,13 +167,13 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> ModificarGenero(Genero genero)
         {
             await this.service.UpdateGeneroAsync(genero.IdGenero, genero.NombreGenero);
-            return RedirectToAction("GenerosView", "Admin");
+            return RedirectToAction("GenerosView");
         }
 
         public async Task<IActionResult> DeleteGenero(int idGenero)
         {
             await this.service.DeleteGeneroAsync(idGenero);
-            return RedirectToAction("GenerosView", "Admin");
+            return RedirectToAction("GenerosView");
         }
 
         //Editores
@@ -205,13 +205,13 @@ namespace PulseGamingMVC.Controllers
         public async Task<IActionResult> ModificarEditor(Editor editor)
         {
             await this.service.UpdateEditorAsync(editor.IDEditor, editor.NombreEditor);
-            return RedirectToAction("EditoresView", "Admin");
+            return RedirectToAction("EditoresView");
         }
 
         public async Task<IActionResult> DeleteEditor(int idEditor)
         {
             await this.service.DeleteEditorAsync(idEditor);
-            return RedirectToAction("EditoresView", "Admin");
+            return RedirectToAction("EditoresView");
         }
     }
 }
