@@ -2,9 +2,11 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PulseGamingMVC.Data;
+using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PulseGamingMVC.Services
@@ -16,13 +18,16 @@ namespace PulseGamingMVC.Services
         private IHttpContextAccessor httpContextAccessor;
         private PulseGamingContext context;
 
+        private XDocument document;
 
-        public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, PulseGamingContext context)
+        public ServicePulseGaming(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, PulseGamingContext context, HelperPathProvider helper)
         {
             this.context = context;
             this.httpContextAccessor = httpContextAccessor;
             this.header = new MediaTypeWithQualityHeaderValue("application/json");
             this.UrlApi = configuration.GetValue<string>("ApiUrls:ApiJuegos");
+            string path = helper.MapPath("");
+            this.document = XDocument.Load(path);
         }
 
         public async Task<string> GetTokenAsync(string email, string password)

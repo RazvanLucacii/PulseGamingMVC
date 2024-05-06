@@ -33,6 +33,12 @@ builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
 
+string CacheRedis = builder.Configuration.GetValue<string>("AzureKeys:CacheRedis");
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = CacheRedis;
+});
+
 builder.Services.AddTransient<ServiceStorageBlobs>();
 string azureKeys = builder.Configuration.GetValue<string>("AzureKeys:StorageAccount")!;
 BlobServiceClient blobServiceClient = new BlobServiceClient(azureKeys);
