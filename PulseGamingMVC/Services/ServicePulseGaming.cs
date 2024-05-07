@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NuGet.Common;
 using PulseGamingMVC.Data;
 using PulseGamingMVC.Helpers;
 using PulseGamingMVC.Models;
@@ -308,12 +309,14 @@ namespace PulseGamingMVC.Services
 
         public async Task InsertGeneroAsync(int id, string nombre)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
-                string request = "api/admin/insertgenero";
+                string request = "/api/admin/insertgenero";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Genero genero = new Genero();
                 genero.IdGenero = id;
                 genero.NombreGenero = nombre;
@@ -325,12 +328,14 @@ namespace PulseGamingMVC.Services
 
         public async Task UpdateGeneroAsync(int id, string nombre)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/updategenero";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Genero genero = new Genero();
                 genero.IdGenero = id;
                 genero.NombreGenero = nombre;
@@ -342,11 +347,13 @@ namespace PulseGamingMVC.Services
 
         public async Task DeleteGeneroAsync(int idgenero)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/deletegenero/" + idgenero;
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 HttpResponseMessage response = await client.DeleteAsync(request);
 
             }
@@ -368,12 +375,14 @@ namespace PulseGamingMVC.Services
 
         public async Task InsertEditorAsync(int id, string nombre)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/inserteditor";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Editor editor = new Editor();
                 editor.IDEditor = id;
                 editor.NombreEditor = nombre;
@@ -385,12 +394,14 @@ namespace PulseGamingMVC.Services
 
         public async Task UpdateEditorAsync(int id, string nombre)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/updateeditor";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Editor editor = new Editor();
                 editor.IDEditor = id;
                 editor.NombreEditor = nombre;
@@ -402,11 +413,13 @@ namespace PulseGamingMVC.Services
 
         public async Task DeleteEditorAsync(int ideditor)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/deleteeditor/" + ideditor;
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 HttpResponseMessage response = await client.DeleteAsync(request);
 
             }
@@ -428,12 +441,14 @@ namespace PulseGamingMVC.Services
 
         public async Task InsertUsuarioAsync(int id, string password, string nombre, string apellidos, string email, int telefono, int IDRole)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/insertusuario";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Usuario usuario = new Usuario();
                 usuario.IdUsuario = id;
                 usuario.Password = password;
@@ -450,12 +465,14 @@ namespace PulseGamingMVC.Services
 
         public async Task UpdateUsuarioAsync(int id, string password, string nombre, string apellidos, string email, int telefono, int IDRole)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/updateusuario";
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
                 client.DefaultRequestHeaders.Accept.Add(this.header);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 Usuario usuario = new Usuario();
                 usuario.IdUsuario = id;
                 usuario.Password = password;
@@ -472,11 +489,13 @@ namespace PulseGamingMVC.Services
 
         public async Task DeleteUsuarioAsync(int idusuario)
         {
+            string token = this.httpContextAccessor.HttpContext.User.FindFirst(z => z.Type == "TOKEN").Value;
             using (HttpClient client = new HttpClient())
             {
                 string request = "api/admin/deleteusuario/" + idusuario;
                 client.BaseAddress = new Uri(this.UrlApi);
                 client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + token);
                 HttpResponseMessage response = await client.DeleteAsync(request);
 
             }

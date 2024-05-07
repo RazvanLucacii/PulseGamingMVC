@@ -6,6 +6,11 @@
     "storage1": {
       "ignored": "true",
       "type": "storage"
+    },
+    "storage2": {
+      "ignored": "true",
+      "type": "storage",
+      "connectionId": "AzureKeys:StorageAccount"
     }
   }
 }

@@ -53,37 +53,27 @@ string connectionString = builder.Configuration.GetConnectionString("SqlPulseGam
 builder.Services.AddTransient<IRepositoryUsuarios, RepositoryUsuarios>();
 builder.Services.AddTransient<IRepositoryJuegos, RepositoryJuegosSqlServer>();
 builder.Services.AddDbContext<PulseGamingContext>(options => options.UseSqlServer(connectionString));
-builder.Services.AddAzureClients(clientBuilder =>
-{
-    clientBuilder.AddBlobServiceClient(builder.Configuration["StorageConnectionString:blob"]!, preferMsi: true);
-    clientBuilder.AddQueueServiceClient(builder.Configuration["StorageConnectionString:queue"]!, preferMsi: true);
-});
 
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
 
-app.UseHttpsRedirection();
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
+
+app.UseRouting();
+
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(builder.Environment.WebRootPath)),
 
 });
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseSession();
 
 app.UseMvc(routes =>
 {
