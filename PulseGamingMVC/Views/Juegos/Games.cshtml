@@ -26,7 +26,14 @@
         {
             <div class="col">
                 <div class="card shadow-sm m-auto">
-                    <img src="@urlImages/@game.ImagenJuego">
+                    @if (game.ImagenJuego.Contains("https"))
+                    {
+                        <img src="@game.ImagenJuego">
+                    }
+                    else
+                    {
+                        <img src="@urlImages/@game.ImagenJuego">
+                    }
                     <div class="card-body">
                         <h5 class="card-title">@game.NombreJuego</h5>
                         <p class="card-text">@game.PrecioJuego €</p>

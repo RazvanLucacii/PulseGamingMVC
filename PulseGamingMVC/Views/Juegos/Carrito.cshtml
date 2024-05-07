@@ -31,7 +31,16 @@
                 @foreach (Juego juego in Model)
                 {
                     <tr>
-                        <td><img src="@urlImages/@juego.ImagenJuego" style="width:200px; height:200px" /></td>
+                        <td>
+                            @if (juego.ImagenJuego.Contains("https"))
+                            {
+                                <img src="@juego.ImagenJuego">
+                            }
+                            else
+                            {
+                                <img src="@urlImages/@juego.ImagenJuego">
+                            }
+                        </td>
                         <td>@juego.NombreJuego</td>
                         <td>@juego.PrecioJuego €</td>
                         <td>

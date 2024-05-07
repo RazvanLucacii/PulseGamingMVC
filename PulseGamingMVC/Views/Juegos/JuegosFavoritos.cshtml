@@ -37,7 +37,14 @@
                         @Html.DisplayFor(modelItem => item.NombreJuego)
                     </td>
                     <td>
-                            <img src="@urlImages/@item.ImagenJuego" style="width: 80px; height: 100px" />
+                        @if (item.ImagenJuego.Contains("https"))
+                        {
+                            <img src="@item.ImagenJuego">
+                        }
+                        else
+                        {
+                            <img src="@urlImages/@item.ImagenJuego">
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PrecioJuego)

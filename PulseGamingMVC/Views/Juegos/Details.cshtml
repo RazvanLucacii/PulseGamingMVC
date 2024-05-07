@@ -16,7 +16,14 @@
         <hr />
         <div class="row">
             <div class="col-lg-6 mb-4">
-                <img src="@urlImages/@Model.ImagenJuego" style="width:500px; height: 600px" />
+                @if (Model.ImagenJuego.Contains("https"))
+                {
+                    <img src="@Model.ImagenJuego">
+                }
+                else
+                {
+                    <img src="@urlImages/@Model.ImagenJuego">
+                }
             </div>
             <div class="col-lg-6">
                 <form method="post" asp-action="AñadirCarrito" enctype="multipart/form-data">
